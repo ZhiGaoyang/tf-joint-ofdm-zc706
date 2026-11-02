@@ -1,0 +1,1 @@
+cd /root/lean; tar -czf /tmp/s2s3.tar.gz s2s3*; sha256sum /tmp/s2s3.tar.gz; echo ARCHIVE_BEGIN; base64 /tmp/s2s3.tar.gz; echo ARCHIVE_END; sha256sum /tmp/s2s3.tar.gz

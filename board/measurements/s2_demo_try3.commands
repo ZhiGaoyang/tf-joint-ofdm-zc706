@@ -1,0 +1,3 @@
+cd /root/lean; sha256sum demo_live.sh | cut -c1-8; time ASCII=1 sh demo_live.sh; echo DEMO_RC=$?
+python3 demo_diag.py 'demo_logs/demo_*.jsonl'
+python3 -c 'from lean_stability import health; print("TEMP_END",health()["temperature_mc"])'

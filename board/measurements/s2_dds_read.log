@@ -1,0 +1,23 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~# 
+[?2004l[?2004hroot@analog:~# tx=; for d in /sys/bus/iio/devices/iio:device*; do [ "$(cat $d/name)" = axi-adrv9009-tx-hpc ] && tx=$d; done; uptime; for f in $tx/out_altvoltage*_frequency $tx/out_altvoltage*_scale; do echo "$(basename $f) $(cat $f)"; done; echo DDSREAD_RC=$?
+[?2004l 06:26:49 up 2 min,  3 users,  load average: 0.55, 0.43, 0.18
+out_altvoltage0_TX1_I_F1_frequency 39999985
+out_altvoltage1_TX1_I_F2_frequency 39999985
+out_altvoltage2_TX1_Q_F1_frequency 39999985
+out_altvoltage3_TX1_Q_F2_frequency 39999985
+out_altvoltage4_TX2_I_F1_frequency 39999985
+out_altvoltage5_TX2_I_F2_frequency 39999985
+out_altvoltage6_TX2_Q_F1_frequency 39999985
+out_altvoltage7_TX2_Q_F2_frequency 39999985
+out_altvoltage_sampling_frequency 122880000
+out_altvoltage0_TX1_I_F1_scale 0.250000
+out_altvoltage1_TX1_I_F2_scale 0.250000
+out_altvoltage2_TX1_Q_F1_scale 0.250000
+out_altvoltage3_TX1_Q_F2_scale 0.250000
+out_altvoltage4_TX2_I_F1_scale 0.250000
+out_altvoltage5_TX2_I_F2_scale 0.250000
+out_altvoltage6_TX2_Q_F1_scale 0.250000
+out_altvoltage7_TX2_Q_F2_scale 0.250000
+DDSREAD_RC=0
+[?2004hroot@analog:~# 

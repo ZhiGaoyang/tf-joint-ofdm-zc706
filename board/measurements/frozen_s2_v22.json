@@ -1,0 +1,22 @@
+{
+ "frozen_at": "2026-10-28, before the v2.2 board run",
+ "change": "v2.2: (1) QPSK release probe in JointOllaPolicyV2 (the releasing window is sent in QPSK); motivated by the sensing re-run +22.5 L1 where a sensed group released straight into 16QAM lost a whole window (QJS 4.2% vs QJ2 1.7%). (2) sensing speed-up: vectorised line search (equivalence test vs v2.1 code), numpy imported before the sensing timer and reported separately (board profile: numpy import 0.60 s, iio_readdev 65536 samples 0.10-0.11 s, old analysis 0.11-0.30 s); capture size unchanged (65536) because it was not the bottleneck. Pre-edit copies build/stage2/before_v22/ (lean_adapt 19dad6ff, lean_nc dd142ab3).",
+ "files": {
+  "scripts/board/lean_adapt.py": "babb3986396c8221e7bdfbc79e38ade8d3d9f1f0759ce081cc133dfeea44cfa0",
+  "scripts/board/lean_nc.py": "3d8b99194862b21c832b6321006caf0af545e1b1523da8feaddb4d6ec2ac080f",
+  "build/stage2/make_s2_sense_v22.py": "df73c9618c491d2d916992a34021387e2f92c4126d45741df011e0db1bcd3c86",
+  "build/stage2/make_s2_sense_v22_guard.py": "070315ad2578c5bdef981bfcb41195ac27c1096087371c63813da4790751496d",
+  "build/stage2/board_s2_sense_v22_guarded.commands": "c9f285d6229a4f0853f3611725fb3a8f8b3dab2f47f903371db96473b29fdd56",
+  "build/stage2/analyze_sense.py": "1713cf4d9bb52c1e740d6f8c0fd0cdcd67bb3e7587f54261ca0e88aa93fdf104"
+ },
+ "design": "identical to frozen_s2_sense.json (Part A no tone S6 vs SJ2S; Part B +17/+22.5 L1-L5, ABBA QJS QJ2 Q0 Q0 QJ2 QJS, 60 windows, OLLA 0.05), tags s2s3*, automatic stop at >= 75 C. Both QJS and QJ2 run v2.2.",
+ "hypotheses": {
+  "H5s": "as before",
+  "H6s": "as before",
+  "H11": "as before",
+  "H12": "as before",
+  "H13": "+22.5 L1: pooled QJS PER <= pooled QJ2 PER (weak-interference penalty of sensing removed)",
+  "H14": "median sensing time (sense record seconds, excluding the numpy import) <= 0.30 s"
+ },
+ "note": "All earlier results stay as recorded."
+}

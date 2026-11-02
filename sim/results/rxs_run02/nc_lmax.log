@@ -1,0 +1,40 @@
+ECHO 处于关闭状态。
+ECHO 处于关闭状态。
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/nc_rxs/xsim_script.tcl
+# xsim {nc_rxs} -testplusarg STREAM=D:/FPGA_COMPETITION/build/ofdm_nc/rxs_vec01/nc_lmax/stream.mem -testplusarg NSAMP=88240 -testplusarg GAIN=0 -testplusarg BLIND=1 -testplusarg HDRTHR=185360 -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+RXS_DETECT start=307 step=5074217 t=6143000
+RXS_TRAINQ tag=1 c_re=24935297256 c_im=-3704615447 s=25759139021 shift=18 cc=9247527824 ss=9655617169 accept=1
+RXS_DETECT start=30871 step=5029304 t=254833000
+RXS_STATUS reason=0 id=1400 len=2988 mcs=0 mask=7 epoch=0 ber=0 cmp=23904 unusable=0 start=307 step=5074217 evm=49040 carriers=11968 src=0 blind=3 t=258358000
+RXS_TRAINQ tag=2 c_re=24656045736 c_im=1248972441 s=25547783207 shift=18 cc=8869038721 ss=9497866849 accept=1
+RXS_DETECT start=52139 step=5005182 t=427923000
+RXS_STATUS reason=2 id=1401 len=4096 mcs=1 mask=7 epoch=0 ber=4 cmp=32768 unusable=0 start=30871 step=5029304 evm=726490 carriers=8200 src=0 blind=3 t=431263000
+RXS_TRAINQ tag=3 c_re=21597641232 c_im=-12946613386 s=25729285081 shift=18 cc=9226957088 ss=9633226201 accept=1
+RXS_DETECT start=82706 step=5045502 t=676718000
+RXS_STATUS reason=0 id=1402 len=3736 mcs=0 mask=256 epoch=0 ber=0 cmp=29888 unusable=0 start=52139 step=5005182 evm=55967 carriers=14960 src=0 blind=128 t=680168000
+RXS_TRAINQ tag=4 c_re=24694721559 c_im=-4909864030 s=25711400134 shift=18 cc=9224829704 ss=9619882561 accept=1
+RXS_STATUS reason=1 id=1403 len=4096 mcs=0 mask=7 epoch=0 ber=0 cmp=0 unusable=0 start=82706 step=5045502 evm=0 carriers=0 src=0 blind=3 t=685658000
+RXS_DETECT start=84506 step=5079755 t=691338000
+RXS_TRAINQ tag=5 c_re=24848132902 c_im=-4937676038 s=25881861829 shift=18 cc=9339559840 ss=9747810361 accept=1
+RXS_DETECT start=85936 step=5044380 t=702968000
+RXS_STATUS reason=0 id=1404 len=64 mcs=0 mask=7 epoch=0 ber=0 cmp=512 unusable=0 start=84506 step=5079755 evm=1035 carriers=272 src=0 blind=3 t=706328000
+RXS_TRAINQ tag=6 c_re=19472800597 c_im=-15978973136 s=25739474601 shift=18 cc=9233327549 ss=9640883344 accept=1
+RXS_STATUS reason=0 id=1405 len=1 mcs=0 mask=0 epoch=0 ber=0 cmp=8 unusable=0 start=85936 step=5044380 evm=70 carriers=20 src=0 blind=0 t=712648000
+RXS_STATS samples=96239 detections=6 long_plateaus=1 busy_drops=0 candidate_drops=0 frames=6 overruns=0 saturations=0 train_ok=6 train_reject=0 dropped_symbols=0 cpe_undefined=1
+RXS_NC blind_hits=4 zero_hits=0 last_ok=0 last_src=0 blind_over=0
+RXS_DONE
+$finish called at time : 803502500 ps : File "D:/FPGA_COMPETITION/tests/rtl/ofdm_nc/tb_nc_rxs_core.sv" Line 116
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:02:15 . Memory (MB): peak = 206.086 ; gain = 0.000
+exit
+INFO: xsimkernel Simulation Memory Usage: 34508 KB (Peak: 34508 KB), Simulation CPU Usage: 132093 ms
+INFO: [Common 17-206] Exiting xsim at Sun Oct 25 10:40:10 2026...

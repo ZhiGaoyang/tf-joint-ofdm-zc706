@@ -1,0 +1,8 @@
+core_synth exit=0 seconds=202
+grid exit=0 seconds=9
+unit exit=0 seconds=15
+txrx exit=0 seconds=105
+vectors exit=0 seconds=1
+rxs exit=0 seconds=160
+lean exit=0 seconds=702
+ALL_DONE

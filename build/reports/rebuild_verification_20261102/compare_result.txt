@@ -1,0 +1,17 @@
+route_status.rpt     IDENTICAL
+summary.tsv          IDENTICAL
+  prebuilt: inserted	WNS=0.051	WHS=-0.381 | placed	WNS=0.201	WHS=-0.381 | routed	WNS=0.029	WHS=0.035
+  rebuild : inserted	WNS=0.051	WHS=-0.381 | placed	WNS=0.201	WHS=-0.381 | routed	WNS=0.029	WHS=0.035
+core utilization     MATCH
+  prebuilt {'Slice LUTs': '20641', 'Slice Registers': '20089', 'Block RAM Tile': '14', 'DSPs': '63'}
+  rebuild  {'Slice LUTs': '20641', 'Slice Registers': '20089', 'Block RAM Tile': '14', 'DSPs': '63'}
+routed timing        MATCH
+  prebuilt {'WNS': '0.029', 'TNS': '0.000', 'WHS': '0.035', 'THS': '0.000', 'WPWS': '0.062', 'TPWS': '0.000'}
+  rebuild  {'WNS': '0.029', 'TNS': '0.000', 'WHS': '0.035', 'THS': '0.000', 'WPWS': '0.062', 'TPWS': '0.000'}
+routed utilization   MATCH
+  prebuilt {'Slice LUTs': '72729', 'Slice Registers': '89716', 'Block RAM Tile': '67', 'DSPs': '176'}
+  rebuild  {'Slice LUTs': '72729', 'Slice Registers': '89716', 'Block RAM Tile': '67', 'DSPs': '176'}
+bitstream data       MATCH
+  prebuilt identical
+  rebuild  identical
+RESULT MATCH

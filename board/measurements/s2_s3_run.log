@@ -1,0 +1,405 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# uptime; cat /proc/sys/kernel/random/boot_id; sha256sum /boot/BOOT.BIN /root/lean/lean_adapt.py /root/lean/lean_nc.py /root/lean/lean_calibration_flat.json; for s in /sys/bus/platform/devices/*jesd204*/status; do grep -E 'Link status|alignment error' "$s"; done; python3 -c 'from lean_stability import health,check_health; h=health(); print("TEMP",h["temperature_mc"]); check_health(h)'; echo PRE_RC=$?
+[?2004l 13:13:18 up 6 min,  3 users,  load average: 0.01, 0.20, 0.14
+e2be76c3-6ac2-4e2c-89f5-acc7839705f3
+0b3ce7eeea7f894b6f3a78f1794465933a33c3fef5b2c5e881dddede35b03e64  /boot/BOOT.BIN
+babb3986396c8221e7bdfbc79e38ade8d3d9f1f0759ce081cc133dfeea44cfa0  /root/lean/lean_adapt.py
+3d8b99194862b21c832b6321006caf0af545e1b1523da8feaddb4d6ec2ac080f  /root/lean/lean_nc.py
+c5bc0ce862b3432e4e00084368f4384b291e66f266a049d17d05adf13c39c965  /root/lean/lean_calibration_flat.json
+Link status: DATA
+SYSREF alignment error: No
+Link status: DATA
+SYSREF alignment error: No
+Link status: DATA
+SYSREF alignment error: No
+TEMP 56000
+PRE_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 lean_ctl.py init --lo 3000000000 --tx-atten 4 --tx-gain 2 --rx-gain 1; echo INIT_RC=$?
+[?2004l{"lo_hz": 3000000000, "calibrated": true, "tx_hardwaregain": "-4.000000 dB", "tx_data_sel": [2, 2, 3, 3], "tx_gain": 2, "rx_gain": 1}
+INIT_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; L.phy_write("out_voltage1_hardwaregain","-41.95"); print("ATT0",L.phy_read("out_voltage0_hardwaregain"),"ATT1",L.phy_read("out_voltage1_hardwaregain"),"SEL",L.tx_data_select(2,3))'; echo TX2OFF_RC=$?
+[?2004lATT0 -4.000000 dB ATT1 -41.950000 dB SEL [2, 2, 3, 3]
+TX2OFF_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'from lean_ctl import Core; c=Core(); c.wr(0x008,3); c.wr(0x030,(16<<20)|(720<<8)|12); print(hex(c.rd(0x030)))'; echo CFG_RC=$?
+[?2004l0x102d00c
+CFG_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 lean_ctl.py rx --enable 1 --prbs 1 --reset; echo RX_RC=$?
+[?2004l{"ctrl": 3, "status": "0x200"}
+RX_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; c=L.Core(); print("PRECHECK ver",hex(c.rd(4)),"ctrl",c.rd(8),"rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F); assert c.rd(4)==0x20261025 and c.rd(8)==3 and c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16'; echo PRECHECK_RC=$?
+[?2004lPRECHECK ver 0x20261025 ctrl 3 rxgain 1 backoff 16
+PRECHECK_RC=0
+[?2004hroot@analog:~/lean# tx=; phy=; for d in /sys/bus/iio/devices/iio:device*; do n=$(cat $d/name 2>/dev/null); [ x$n = xaxi-adrv9009-tx-hpc ] && tx=$d; [ x$n = xadrv9009-phy ] && phy=$d; done; echo tx=$tx phy=$phy; echo STATE_RC=$?
+[?2004ltx=/sys/bus/iio/devices/iio:device5 phy=/sys/bus/iio/devices/iio:device3
+STATE_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; printf '%s\n' 'import numpy as np,sys' 'd=np.fromfile(sys.argv[1],dtype=np.int16).astype(float); x=d[0::2]+1j*d[1::2]; N=65536; M=len(x)//N; w=np.hanning(N)' 'P=np.mean(np.abs(np.fft.fft(x[:M*N].reshape(M,N)*w,axis=1))**2,axis=0); f=np.fft.fftfreq(N,1/122.88e6); k=int(np.argmin(abs(f-16.32e6))); k=k-5+int(np.argmax(P[k-5:k+6]))' 'g=N*np.sum(w**2)*32768.0**2; print(sys.argv[1],"tone_dBFS %.2f noise_bin_dBFS %.2f tone_MHz %.4f peak_abs %d"%(10*np.log10(np.sum(P[k-4:k+5])/g),10*np.log10(np.median(P)/g),f[k]/1e6,int(np.abs(d).max())))' > /tmp/tone_meas.py; echo HELPER_RC=$?
+[?2004lHELPER_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; (python3 lean_ctl.py run --bursts 400 --frames 32 --len 4096 > /tmp/e2_run.out 2>&1 &); sleep 0.5; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2_ofdm.bin 2>/dev/null; python3 -c 'import numpy as np,sys; d=np.fromfile(sys.argv[1],dtype=np.int16).astype(float); x=d[0::2]+1j*d[1::2]; b=(np.abs(x[:len(x)//4096*4096].reshape(-1,4096))**2).mean(1); print("OFDMPWR blk_dBFS p10 %.1f p50 %.1f p90 %.1f max %.1f peak_abs %d"%(tuple(10*np.log10(np.percentile(b,[10,50,90,100])/32768**2))+(int(np.abs(d).max()),)))' /tmp/e2_ofdm.bin; while pgrep -f 'lean_ctl.py run' > /dev/null; do sleep 1; done; tail -1 /tmp/e2_run.out | cut -c1-200; echo OFDMPWR_RC=$?
+[?2004lOFDMPWR blk_dBFS p10 -40.2 p50 -40.2 p90 -40.1 max -40.1 peak_abs 2025
+{"sent": 12800, "ok": 12800, "crc_fail": 0, "header_fail": 0, "truncated": 0, "per": 0.0, "compared_bits": 419430400, "bit_errors": 0, "ber": 0.0, "evm": 3.5457150751483852, "goodput_mbps": 124.606333
+OFDMPWR_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; printf '%s\n' 'import numpy as np,sys' 'd=np.fromfile(sys.argv[1],dtype=np.int16).astype(float); x=d[0::2]+1j*d[1::2]; N=65536; M=len(x)//N; w=np.hanning(N); f0=float(sys.argv[2])' 'P=np.mean(np.abs(np.fft.fft(x[:M*N].reshape(M,N)*w,axis=1))**2,axis=0); f=np.fft.fftfreq(N,1/122.88e6); k=int(np.argmin(abs(f-f0))); k=k-5+int(np.argmax(P[k-5:k+6]))' 'g=N*np.sum(w**2)*32768.0**2; print(sys.argv[1],"tone_dBFS %.2f noise_bin_dBFS %.2f tone_MHz %.4f peak_abs %d"%(10*np.log10(np.sum(P[k-4:k+5])/g),10*np.log10(np.median(P)/g),f[k]/1e6,int(np.abs(d).max())))' > /tmp/tone_meas2.py; echo HELPER2_RC=$?
+[?2004lHELPER2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; sha256sum lean_adapt.py lean_nc.py; echo SCRIPTSHA_RC=$?
+[?2004lbabb3986396c8221e7bdfbc79e38ade8d3d9f1f0759ce081cc133dfeea44cfa0  lean_adapt.py
+3d8b99194862b21c832b6321006caf0af545e1b1523da8feaddb4d6ec2ac080f  lean_nc.py
+SCRIPTSHA_RC=0
+[?2004hroot@analog:~/lean# rm -f /tmp/s2_stop; echo STOPMARK_CLEARED
+[?2004lSTOPMARK_CLEARED
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 55000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r1_T2_S6.jsonl > s2s3e1_r1_T2_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r1_T2_S6.jsonl | cut -c1-260; echo s2s3e1_r1_T2_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19251200, "elapsed_s": 0.8101375280000411, "ok": 1175, "per": 0.02083333333333337, "bit_errors": 32, "compared_bits": 19660800, "ber": 1.6276041666666668e-06, "window_elapsed_s": 0.31764806
+s2s3e1_r1_T2_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r1_T2_SJ2S.jsonl > s2s3e1_r1_T2_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r1_T2_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r1_T2_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19267584, "elapsed_s": 2.7622619680000184, "ok": 1176, "per": 0.020000000000000018, "bit_errors": 27, "compared_bits": 19660800, "ber": 1.373291015625e-06, "window_elapsed_s": 0.31810093499
+s2s3e1_r1_T2_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r1_T3_S6.jsonl > s2s3e1_r1_T3_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r1_T3_S6.jsonl | cut -c1-260; echo s2s3e1_r1_T3_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23461888, "elapsed_s": 1.3273481420000053, "ok": 1432, "per": 0.005555555555555536, "bit_errors": 10, "compared_bits": 23592960, "ber": 4.238552517361111e-07, "window_elapsed_s": 0.42860639
+s2s3e1_r1_T3_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r1_T3_SJ2S.jsonl > s2s3e1_r1_T3_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r1_T3_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r1_T3_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23429120, "elapsed_s": 3.4829182369999785, "ok": 1430, "per": 0.00694444444444442, "bit_errors": 16, "compared_bits": 23592960, "ber": 6.781684027777778e-07, "window_elapsed_s": 0.431914195
+s2s3e1_r1_T3_SJ2S_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 54000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r2_T2_SJ2S.jsonl > s2s3e1_r2_T2_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r2_T2_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r2_T2_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19333120, "elapsed_s": 2.7671641769999837, "ok": 1180, "per": 0.01666666666666672, "bit_errors": 26, "compared_bits": 19660800, "ber": 1.3224283854166667e-06, "window_elapsed_s": 0.31569254
+s2s3e1_r2_T2_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r2_T2_S6.jsonl > s2s3e1_r2_T2_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r2_T2_S6.jsonl | cut -c1-260; echo s2s3e1_r2_T2_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19333120, "elapsed_s": 0.8070867199999725, "ok": 1180, "per": 0.01666666666666672, "bit_errors": 22, "compared_bits": 19660800, "ber": 1.1189778645833333e-06, "window_elapsed_s": 0.31174076
+s2s3e1_r2_T2_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r2_T3_SJ2S.jsonl > s2s3e1_r2_T3_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r2_T3_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r2_T3_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23429120, "elapsed_s": 3.442924209999944, "ok": 1430, "per": 0.00694444444444442, "bit_errors": 12, "compared_bits": 23592960, "ber": 5.086263020833333e-07, "window_elapsed_s": 0.4287589980
+s2s3e1_r2_T3_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r2_T3_S6.jsonl > s2s3e1_r2_T3_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r2_T3_S6.jsonl | cut -c1-260; echo s2s3e1_r2_T3_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23396352, "elapsed_s": 1.3159668069999952, "ok": 1428, "per": 0.008333333333333304, "bit_errors": 20, "compared_bits": 23592960, "ber": 8.477105034722222e-07, "window_elapsed_s": 0.42664579
+s2s3e1_r2_T3_S6_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 54000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r3_T2_S6.jsonl > s2s3e1_r3_T2_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r3_T2_S6.jsonl | cut -c1-260; echo s2s3e1_r3_T2_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19267584, "elapsed_s": 0.8161108040000045, "ok": 1176, "per": 0.020000000000000018, "bit_errors": 29, "compared_bits": 19660800, "ber": 1.4750162760416666e-06, "window_elapsed_s": 0.3171541
+s2s3e1_r3_T2_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r3_T2_SJ2S.jsonl > s2s3e1_r3_T2_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r3_T2_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r3_T2_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19300352, "elapsed_s": 2.7615610899999865, "ok": 1178, "per": 0.018333333333333313, "bit_errors": 27, "compared_bits": 19660800, "ber": 1.373291015625e-06, "window_elapsed_s": 0.31962057000
+s2s3e1_r3_T2_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r3_T3_S6.jsonl > s2s3e1_r3_T3_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r3_T3_S6.jsonl | cut -c1-260; echo s2s3e1_r3_T3_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23412736, "elapsed_s": 1.334772103999967, "ok": 1429, "per": 0.007638888888888862, "bit_errors": 11, "compared_bits": 23592960, "ber": 4.662407769097222e-07, "window_elapsed_s": 0.427918719
+s2s3e1_r3_T3_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r3_T3_SJ2S.jsonl > s2s3e1_r3_T3_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r3_T3_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r3_T3_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23429120, "elapsed_s": 3.4455895660000238, "ok": 1430, "per": 0.00694444444444442, "bit_errors": 11, "compared_bits": 23592960, "ber": 4.662407769097222e-07, "window_elapsed_s": 0.424495498
+s2s3e1_r3_T3_SJ2S_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 54000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r4_T2_SJ2S.jsonl > s2s3e1_r4_T2_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r4_T2_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r4_T2_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19316736, "elapsed_s": 2.748899996999967, "ok": 1179, "per": 0.01749999999999996, "bit_errors": 24, "compared_bits": 19660800, "ber": 1.220703125e-06, "window_elapsed_s": 0.3216641880003976
+s2s3e1_r4_T2_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r4_T2_S6.jsonl > s2s3e1_r4_T2_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r4_T2_S6.jsonl | cut -c1-260; echo s2s3e1_r4_T2_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19267584, "elapsed_s": 0.8100208820000034, "ok": 1176, "per": 0.020000000000000018, "bit_errors": 25, "compared_bits": 19660800, "ber": 1.2715657552083333e-06, "window_elapsed_s": 0.3128382
+s2s3e1_r4_T2_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r4_T3_SJ2S.jsonl > s2s3e1_r4_T3_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r4_T3_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r4_T3_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23445504, "elapsed_s": 3.4396283140000037, "ok": 1431, "per": 0.006249999999999978, "bit_errors": 11, "compared_bits": 23592960, "ber": 4.662407769097222e-07, "window_elapsed_s": 0.43161432
+s2s3e1_r4_T3_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r4_T3_S6.jsonl > s2s3e1_r4_T3_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r4_T3_S6.jsonl | cut -c1-260; echo s2s3e1_r4_T3_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23461888, "elapsed_s": 1.3151049069999772, "ok": 1432, "per": 0.005555555555555536, "bit_errors": 8, "compared_bits": 23592960, "ber": 3.390842013888889e-07, "window_elapsed_s": 0.424879364
+s2s3e1_r4_T3_S6_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 54000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r5_T2_S6.jsonl > s2s3e1_r5_T2_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r5_T2_S6.jsonl | cut -c1-260; echo s2s3e1_r5_T2_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19300352, "elapsed_s": 0.8111378840000043, "ok": 1178, "per": 0.018333333333333313, "bit_errors": 28, "compared_bits": 19660800, "ber": 1.4241536458333334e-06, "window_elapsed_s": 0.3166002
+s2s3e1_r5_T2_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 75 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 10 11 12 13 14 15 16 17 16 15 14 13 12 11 10 --hold-windows 5 --log s2s3e1_r5_T2_SJ2S.jsonl > s2s3e1_r5_T2_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r5_T2_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r5_T2_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1200, "delivered_bits": 19283968, "elapsed_s": 2.7299951250000163, "ok": 1177, "per": 0.019166666666666665, "bit_errors": 33, "compared_bits": 19660800, "ber": 1.678466796875e-06, "window_elapsed_s": 0.31791150399
+s2s3e1_r5_T2_SJ2S_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy pred_olla --calibration lean_calibration_flat.json --pred-k 0 --pred-phi 0 --olla-target 0.05 --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r5_T3_S6.jsonl > s2s3e1_r5_T3_S6.stdout 2>&1; rc=$?; tail -1 s2s3e1_r5_T3_S6.jsonl | cut -c1-260; echo s2s3e1_r5_T3_S6_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23478272, "elapsed_s": 1.3358648839999887, "ok": 1433, "per": 0.004861111111111094, "bit_errors": 10, "compared_bits": 23592960, "ber": 4.238552517361111e-07, "window_elapsed_s": 0.43025436
+s2s3e1_r5_T3_S6_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 90 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --attenuation 14 14.5 13.5 12.5 14 15.5 16.5 17 15.5 16 15.5 14.5 16 15 13.5 13 13.5 14 15.5 14 13.5 14.5 15.5 14 15.5 16 17 15.5 16.5 17 --hold-windows 3 --log s2s3e1_r5_T3_SJ2S.jsonl > s2s3e1_r5_T3_SJ2S.stdout 2>&1; rc=$?; tail -1 s2s3e1_r5_T3_SJ2S.jsonl | cut -c1-260; echo s2s3e1_r5_T3_SJ2S_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 1440, "delivered_bits": 23461888, "elapsed_s": 3.4122541899999987, "ok": 1432, "per": 0.005555555555555536, "bit_errors": 9, "compared_bits": 23592960, "ber": 3.814697265625e-07, "window_elapsed_s": 0.429321761999
+s2s3e1_r5_T3_SJ2S_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 55000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# echo 16320000 > $tx/out_altvoltage4_TX2_I_F1_frequency; echo 90000 > $tx/out_altvoltage4_TX2_I_F1_phase; echo 16320000 > $tx/out_altvoltage6_TX2_Q_F1_frequency; echo 0 > $tx/out_altvoltage6_TX2_Q_F1_phase; echo FREQ $(cat $tx/out_altvoltage4_TX2_I_F1_frequency); echo FREQ_RC=$?
+[?2004lFREQ 16318373
+FREQ_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -26.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P17 L1 att 26.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 16320000; echo s2s3e2_P17_L1_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P17 L1 att 26.95 scale 0.1
+/tmp/e2.bin tone_dBFS -66.93 noise_bin_dBFS -118.40 tone_MHz 16.3181 peak_abs 93
+s2s3e2_P17_L1_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L1_QJS_1.jsonl > s2s3e2_P17_L1_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P17_L1_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15220736, "elapsed_s": 1.951750302999983, "ok": 929, "per": 0.03229166666666672, "bit_errors": 41, "compared_bits": 15728640, "ber": 2.6067097981770834e-06, "window_elapsed_s": 0.25452743300
+s2s3e2_P17_L1_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L1_QJ2_1.jsonl > s2s3e2_P17_L1_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P17_L1_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15220736, "elapsed_s": 0.9653224659999751, "ok": 929, "per": 0.03229166666666672, "bit_errors": 1280, "compared_bits": 15712256, "ber": 8.146506777893639e-05, "window_elapsed_s": 0.254909958
+s2s3e2_P17_L1_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L1_Q0_1.jsonl > s2s3e2_P17_L1_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P17_L1_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3618305429999964, "ok": 0, "per": 1.0, "bit_errors": 74709, "compared_bits": 15679488, "ber": 0.004764760175842477, "window_elapsed_s": 0.2877982579998388, "window_goodput_
+s2s3e2_P17_L1_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L1_Q0_2.jsonl > s2s3e2_P17_L1_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P17_L1_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.37468703700000106, "ok": 0, "per": 1.0, "bit_errors": 75123, "compared_bits": 15728640, "ber": 0.004776191711425781, "window_elapsed_s": 0.29305144500017377, "window_goodpu
+s2s3e2_P17_L1_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L1_QJ2_2.jsonl > s2s3e2_P17_L1_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P17_L1_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15187968, "elapsed_s": 1.0480708009999944, "ok": 927, "per": 0.034375000000000044, "bit_errors": 1216, "compared_bits": 15728640, "ber": 7.731119791666666e-05, "window_elapsed_s": 0.26027338
+s2s3e2_P17_L1_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L1_QJS_2.jsonl > s2s3e2_P17_L1_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L1_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P17_L1_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15106048, "elapsed_s": 2.2550653849999662, "ok": 922, "per": 0.039583333333333304, "bit_errors": 42, "compared_bits": 15728640, "ber": 2.6702880859375e-06, "window_elapsed_s": 0.256430408999
+s2s3e2_P17_L1_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -23.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P17 L2 att 23.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 16320000; echo s2s3e2_P17_L2_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P17 L2 att 23.95 scale 0.1
+/tmp/e2.bin tone_dBFS -63.96 noise_bin_dBFS -118.42 tone_MHz 16.3181 peak_abs 119
+s2s3e2_P17_L2_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L2_QJS_1.jsonl > s2s3e2_P17_L2_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P17_L2_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15482880, "elapsed_s": 2.2117786959999535, "ok": 945, "per": 0.015625, "bit_errors": 56, "compared_bits": 15728640, "ber": 3.5603841145833334e-06, "window_elapsed_s": 0.262558580999837, "win
+s2s3e2_P17_L2_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L2_QJ2_1.jsonl > s2s3e2_P17_L2_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P17_L2_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15204352, "elapsed_s": 1.0074748000000113, "ok": 928, "per": 0.033333333333333326, "bit_errors": 1941, "compared_bits": 15679488, "ber": 0.0001237923075039185, "window_elapsed_s": 0.26198079
+s2s3e2_P17_L2_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L2_Q0_1.jsonl > s2s3e2_P17_L2_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P17_L2_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3871194459999856, "ok": 0, "per": 1.0, "bit_errors": 116461, "compared_bits": 13926400, "ber": 0.00836260627297794, "window_elapsed_s": 0.2976313290002395, "window_goodput_
+s2s3e2_P17_L2_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L2_Q0_2.jsonl > s2s3e2_P17_L2_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P17_L2_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.40145957199996474, "ok": 0, "per": 1.0, "bit_errors": 116714, "compared_bits": 13893632, "ber": 0.0084005391822671, "window_elapsed_s": 0.298636336000186, "window_goodput_m
+s2s3e2_P17_L2_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L2_QJ2_2.jsonl > s2s3e2_P17_L2_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P17_L2_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15204352, "elapsed_s": 1.0459124870000096, "ok": 928, "per": 0.033333333333333326, "bit_errors": 1752, "compared_bits": 15663104, "ber": 0.00011185522358786611, "window_elapsed_s": 0.2838063
+s2s3e2_P17_L2_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L2_QJS_2.jsonl > s2s3e2_P17_L2_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L2_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P17_L2_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15482880, "elapsed_s": 2.103719984999998, "ok": 945, "per": 0.015625, "bit_errors": 65, "compared_bits": 15728640, "ber": 4.132588704427083e-06, "window_elapsed_s": 0.2631764500000031, "wind
+s2s3e2_P17_L2_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -17.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P17 L3 att 17.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 16320000; echo s2s3e2_P17_L3_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P17 L3 att 17.95 scale 0.1
+/tmp/e2.bin tone_dBFS -58.01 noise_bin_dBFS -118.41 tone_MHz 16.3181 peak_abs 202
+s2s3e2_P17_L3_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L3_QJS_1.jsonl > s2s3e2_P17_L3_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P17_L3_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15450112, "elapsed_s": 2.029067227999974, "ok": 943, "per": 0.017708333333333326, "bit_errors": 128, "compared_bits": 15728640, "ber": 8.138020833333333e-06, "window_elapsed_s": 0.3273417629
+s2s3e2_P17_L3_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L3_QJ2_1.jsonl > s2s3e2_P17_L3_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P17_L3_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15286272, "elapsed_s": 0.9823463970000148, "ok": 933, "per": 0.028124999999999956, "bit_errors": 1436, "compared_bits": 15548416, "ber": 9.235667478925184e-05, "window_elapsed_s": 0.32384710
+s2s3e2_P17_L3_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L3_Q0_1.jsonl > s2s3e2_P17_L3_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P17_L3_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.37412428599998293, "ok": 0, "per": 1.0, "bit_errors": 119369, "compared_bits": 7045120, "ber": 0.016943501317223837, "window_elapsed_s": 0.290822887999866, "window_goodput_
+s2s3e2_P17_L3_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L3_Q0_2.jsonl > s2s3e2_P17_L3_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P17_L3_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3850213119999921, "ok": 0, "per": 1.0, "bit_errors": 119207, "compared_bits": 7045120, "ber": 0.01692050667696221, "window_elapsed_s": 0.29650162000007185, "window_goodput_
+s2s3e2_P17_L3_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L3_QJ2_2.jsonl > s2s3e2_P17_L3_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P17_L3_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15269888, "elapsed_s": 1.050485555000023, "ok": 932, "per": 0.029166666666666674, "bit_errors": 1854, "compared_bits": 15564800, "ber": 0.00011911492598684211, "window_elapsed_s": 0.33365637
+s2s3e2_P17_L3_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L3_QJS_2.jsonl > s2s3e2_P17_L3_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L3_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P17_L3_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15564800, "elapsed_s": 2.1050851829999147, "ok": 950, "per": 0.01041666666666663, "bit_errors": 94, "compared_bits": 15728640, "ber": 5.976359049479167e-06, "window_elapsed_s": 0.33362352300
+s2s3e2_P17_L3_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 57000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -26.95 > $phy/out_voltage1_hardwaregain; echo 0.5 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.5 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P17 L4 att 26.95 scale 0.5; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 16320000; echo s2s3e2_P17_L4_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P17 L4 att 26.95 scale 0.5
+/tmp/e2.bin tone_dBFS -52.97 noise_bin_dBFS -118.41 tone_MHz 16.3181 peak_abs 147
+s2s3e2_P17_L4_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L4_QJS_1.jsonl > s2s3e2_P17_L4_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P17_L4_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15253504, "elapsed_s": 2.117066948999991, "ok": 931, "per": 0.03020833333333328, "bit_errors": 36, "compared_bits": 15728640, "ber": 2.288818359375e-06, "window_elapsed_s": 0.265723575999345
+s2s3e2_P17_L4_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L4_QJ2_1.jsonl > s2s3e2_P17_L4_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P17_L4_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15089664, "elapsed_s": 1.0348846129999174, "ok": 921, "per": 0.04062500000000002, "bit_errors": 925, "compared_bits": 15564800, "ber": 5.942896792763158e-05, "window_elapsed_s": 0.2644230610
+s2s3e2_P17_L4_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L4_Q0_1.jsonl > s2s3e2_P17_L4_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P17_L4_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.4012490860000071, "ok": 0, "per": 1.0, "bit_errors": 49883, "compared_bits": 5292032, "ber": 0.009426057892318112, "window_elapsed_s": 0.2999054609996392, "window_goodput_m
+s2s3e2_P17_L4_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L4_Q0_2.jsonl > s2s3e2_P17_L4_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P17_L4_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3938038000000006, "ok": 0, "per": 1.0, "bit_errors": 50789, "compared_bits": 5390336, "ber": 0.009422232677146657, "window_elapsed_s": 0.29998354599968025, "window_goodput_
+s2s3e2_P17_L4_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L4_QJ2_2.jsonl > s2s3e2_P17_L4_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P17_L4_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15187968, "elapsed_s": 1.0522465839999313, "ok": 927, "per": 0.034375000000000044, "bit_errors": 525, "compared_bits": 15515648, "ber": 3.383680784714889e-05, "window_elapsed_s": 0.267788084
+s2s3e2_P17_L4_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L4_QJS_2.jsonl > s2s3e2_P17_L4_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L4_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P17_L4_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15319040, "elapsed_s": 2.1328083209999704, "ok": 935, "per": 0.02604166666666663, "bit_errors": 34, "compared_bits": 15728640, "ber": 2.1616617838541666e-06, "window_elapsed_s": 0.2653395930
+s2s3e2_P17_L4_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 57000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -20.95 > $phy/out_voltage1_hardwaregain; echo 0.5 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.5 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P17 L5 att 20.95 scale 0.5; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 16320000; echo s2s3e2_P17_L5_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P17 L5 att 20.95 scale 0.5
+/tmp/e2.bin tone_dBFS -47.00 noise_bin_dBFS -118.39 tone_MHz 16.3181 peak_abs 273
+s2s3e2_P17_L5_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L5_QJS_1.jsonl > s2s3e2_P17_L5_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P17_L5_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 2.150162266000052, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.30559104800022396, "window_goodput_mbps": 51.46
+s2s3e2_P17_L5_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L5_QJ2_1.jsonl > s2s3e2_P17_L5_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P17_L5_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.1130623930000638, "ok": 944, "per": 0.01666666666666672, "bit_errors": 1253, "compared_bits": 15548416, "ber": 8.058698712460485e-05, "window_elapsed_s": 0.306015921
+s2s3e2_P17_L5_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L5_Q0_1.jsonl > s2s3e2_P17_L5_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P17_L5_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.39422275499998705, "ok": 0, "per": 1.0, "bit_errors": 67676, "compared_bits": 4358144, "ber": 0.015528628700657895, "window_elapsed_s": 0.29620949100001326, "window_goodput
+s2s3e2_P17_L5_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P17_L5_Q0_2.jsonl > s2s3e2_P17_L5_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P17_L5_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3911858189999293, "ok": 0, "per": 1.0, "bit_errors": 66866, "compared_bits": 4325376, "ber": 0.015459002870501894, "window_elapsed_s": 0.2994179660001919, "window_goodput_m
+s2s3e2_P17_L5_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P17_L5_QJ2_2.jsonl > s2s3e2_P17_L5_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P17_L5_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.0923071570000502, "ok": 944, "per": 0.01666666666666672, "bit_errors": 1010, "compared_bits": 15532032, "ber": 6.502690697521097e-05, "window_elapsed_s": 0.313109720
+s2s3e2_P17_L5_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P17_L5_QJS_2.jsonl > s2s3e2_P17_L5_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P17_L5_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P17_L5_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 2.18939676399998, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.3076618530002406, "window_goodput_mbps": 51.1231
+s2s3e2_P17_L5_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# for f in $tx/out_altvoltage*_scale; do echo 0 > $f; done; echo SCALES_OFF_RC=$?
+[?2004lSCALES_OFF_RC=0
+[?2004hroot@analog:~/lean# echo 21600000 > $tx/out_altvoltage4_TX2_I_F1_frequency; echo 90000 > $tx/out_altvoltage4_TX2_I_F1_phase; echo 21600000 > $tx/out_altvoltage6_TX2_Q_F1_frequency; echo 0 > $tx/out_altvoltage6_TX2_Q_F1_phase; echo FREQ $(cat $tx/out_altvoltage4_TX2_I_F1_frequency); echo FREQ_RC=$?
+[?2004lFREQ 21598454
+FREQ_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -26.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P22 L1 att 26.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 21600000; echo s2s3e2_P22_L1_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P22 L1 att 26.95 scale 0.1
+/tmp/e2.bin tone_dBFS -66.50 noise_bin_dBFS -118.40 tone_MHz 21.5981 peak_abs 48
+s2s3e2_P22_L1_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L1_QJS_1.jsonl > s2s3e2_P22_L1_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P22_L1_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 2.112797571000101, "ok": 944, "per": 0.01666666666666672, "bit_errors": 367, "compared_bits": 15728640, "ber": 2.3333231608072915e-05, "window_elapsed_s": 0.2629205490
+s2s3e2_P22_L1_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L1_QJ2_1.jsonl > s2s3e2_P22_L1_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P22_L1_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.0430387979999978, "ok": 944, "per": 0.01666666666666672, "bit_errors": 384, "compared_bits": 15728640, "ber": 2.44140625e-05, "window_elapsed_s": 0.26479089800034217
+s2s3e2_P22_L1_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L1_Q0_1.jsonl > s2s3e2_P22_L1_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P22_L1_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 0.3890198919999648, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2980497199995398, "window_goodput_mbps": 52.77
+s2s3e2_P22_L1_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L1_Q0_2.jsonl > s2s3e2_P22_L1_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P22_L1_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 0.3894532360000085, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.29860887299957994, "window_goodput_mbps": 52.6
+s2s3e2_P22_L1_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L1_QJ2_2.jsonl > s2s3e2_P22_L1_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P22_L1_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 0.9649634679999508, "ok": 944, "per": 0.01666666666666672, "bit_errors": 384, "compared_bits": 15728640, "ber": 2.44140625e-05, "window_elapsed_s": 0.2546811930004651,
+s2s3e2_P22_L1_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L1_QJS_2.jsonl > s2s3e2_P22_L1_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L1_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P22_L1_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.889067667000063, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2561515650002093, "window_goodput_mbps": 61.403
+s2s3e2_P22_L1_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -23.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P22 L2 att 23.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 21600000; echo s2s3e2_P22_L2_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P22 L2 att 23.95 scale 0.1
+/tmp/e2.bin tone_dBFS -63.51 noise_bin_dBFS -118.40 tone_MHz 21.5981 peak_abs 55
+s2s3e2_P22_L2_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L2_QJS_1.jsonl > s2s3e2_P22_L2_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P22_L2_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.8942222549999315, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2546196209993923, "window_goodput_mbps": 61.77
+s2s3e2_P22_L2_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L2_QJ2_1.jsonl > s2s3e2_P22_L2_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P22_L2_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 0.9572938710000471, "ok": 944, "per": 0.01666666666666672, "bit_errors": 205, "compared_bits": 15728640, "ber": 1.3033548990885416e-05, "window_elapsed_s": 0.254664187
+s2s3e2_P22_L2_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L2_Q0_1.jsonl > s2s3e2_P22_L2_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P22_L2_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 3325952, "elapsed_s": 0.36229677900007573, "ok": 203, "per": 0.7885416666666667, "bit_errors": 11366, "compared_bits": 14860288, "ber": 0.0007648573163588754, "window_elapsed_s": 0.287594631
+s2s3e2_P22_L2_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L2_Q0_2.jsonl > s2s3e2_P22_L2_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P22_L2_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 4046848, "elapsed_s": 0.36166806900007487, "ok": 247, "per": 0.7427083333333333, "bit_errors": 10362, "compared_bits": 14663680, "ber": 0.0007066438983938547, "window_elapsed_s": 0.287570959
+s2s3e2_P22_L2_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L2_QJ2_2.jsonl > s2s3e2_P22_L2_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P22_L2_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 0.9526950929999884, "ok": 944, "per": 0.01666666666666672, "bit_errors": 176, "compared_bits": 15679488, "ber": 1.122485632183908e-05, "window_elapsed_s": 0.2547531580
+s2s3e2_P22_L2_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L2_QJS_2.jsonl > s2s3e2_P22_L2_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L2_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P22_L2_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.9059682690000272, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2557878400004938, "window_goodput_mbps": 61.49
+s2s3e2_P22_L2_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -17.95 > $phy/out_voltage1_hardwaregain; echo 0.1 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.1 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P22 L3 att 17.95 scale 0.1; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 21600000; echo s2s3e2_P22_L3_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P22 L3 att 17.95 scale 0.1
+/tmp/e2.bin tone_dBFS -57.57 noise_bin_dBFS -118.40 tone_MHz 21.5981 peak_abs 77
+s2s3e2_P22_L3_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L3_QJS_1.jsonl > s2s3e2_P22_L3_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P22_L3_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.9538164269999925, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.25499616000047354, "window_goodput_mbps": 61.6
+s2s3e2_P22_L3_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L3_QJ2_1.jsonl > s2s3e2_P22_L3_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P22_L3_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.0041846880000094, "ok": 944, "per": 0.01666666666666672, "bit_errors": 680, "compared_bits": 15613952, "ber": 4.355079354669465e-05, "window_elapsed_s": 0.2549405579
+s2s3e2_P22_L3_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L3_Q0_1.jsonl > s2s3e2_P22_L3_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P22_L3_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.36107357200000934, "ok": 0, "per": 1.0, "bit_errors": 41982, "compared_bits": 8421376, "ber": 0.004985171069430934, "window_elapsed_s": 0.2876211150002064, "window_goodput_
+s2s3e2_P22_L3_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L3_Q0_2.jsonl > s2s3e2_P22_L3_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P22_L3_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.36203556899999967, "ok": 0, "per": 1.0, "bit_errors": 42085, "compared_bits": 8404992, "ber": 0.005007143373842593, "window_elapsed_s": 0.28815503700036516, "window_goodput
+s2s3e2_P22_L3_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L3_QJ2_2.jsonl > s2s3e2_P22_L3_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P22_L3_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 0.9878225019999718, "ok": 944, "per": 0.01666666666666672, "bit_errors": 514, "compared_bits": 15581184, "ber": 3.298850716351209e-05, "window_elapsed_s": 0.2538063380
+s2s3e2_P22_L3_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L3_QJS_2.jsonl > s2s3e2_P22_L3_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L3_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P22_L3_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.9642978690000064, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2546048729998347, "window_goodput_mbps": 61.77
+s2s3e2_P22_L3_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -26.95 > $phy/out_voltage1_hardwaregain; echo 0.5 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.5 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P22 L4 att 26.95 scale 0.5; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 21600000; echo s2s3e2_P22_L4_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P22 L4 att 26.95 scale 0.5
+/tmp/e2.bin tone_dBFS -52.53 noise_bin_dBFS -118.41 tone_MHz 21.5981 peak_abs 114
+s2s3e2_P22_L4_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L4_QJS_1.jsonl > s2s3e2_P22_L4_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P22_L4_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15712256, "elapsed_s": 1.9440390309999884, "ok": 959, "per": 0.0010416666666667185, "bit_errors": 1, "compared_bits": 15728640, "ber": 6.357828776041667e-08, "window_elapsed_s": 0.2559256070
+s2s3e2_P22_L4_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L4_QJ2_1.jsonl > s2s3e2_P22_L4_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P22_L4_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15417344, "elapsed_s": 0.9848188239999445, "ok": 941, "per": 0.019791666666666652, "bit_errors": 1209, "compared_bits": 15581184, "ber": 7.759358980678234e-05, "window_elapsed_s": 0.25472411
+s2s3e2_P22_L4_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L4_Q0_1.jsonl > s2s3e2_P22_L4_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P22_L4_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.3601391680000461, "ok": 0, "per": 1.0, "bit_errors": 61523, "compared_bits": 5488640, "ber": 0.011209151993936567, "window_elapsed_s": 0.2873587840001619, "window_goodput_m
+s2s3e2_P22_L4_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L4_Q0_2.jsonl > s2s3e2_P22_L4_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P22_L4_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.36073761900001955, "ok": 0, "per": 1.0, "bit_errors": 56451, "compared_bits": 4849664, "ber": 0.011640187856313345, "window_elapsed_s": 0.2877963689998069, "window_goodput_
+s2s3e2_P22_L4_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L4_QJ2_2.jsonl > s2s3e2_P22_L4_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P22_L4_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15450112, "elapsed_s": 0.974292867000031, "ok": 943, "per": 0.017708333333333326, "bit_errors": 1138, "compared_bits": 15581184, "ber": 7.303681157991588e-05, "window_elapsed_s": 0.254077651
+s2s3e2_P22_L4_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L4_QJS_2.jsonl > s2s3e2_P22_L4_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L4_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P22_L4_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.9231732150000198, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.2546150860008538, "window_goodput_mbps": 61.77
+s2s3e2_P22_L4_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else echo -20.95 > $phy/out_voltage1_hardwaregain; echo 0.5 > $tx/out_altvoltage4_TX2_I_F1_scale; echo 0.5 > $tx/out_altvoltage6_TX2_Q_F1_scale; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 0))'; echo LEVEL P22 L5 att 20.95 scale 0.5; sleep 0.3; iio_readdev -u local: -b 1048576 -s 1048576 axi-adrv9009-rx-hpc voltage0_i voltage0_q > /tmp/e2.bin 2>/dev/null; python3 /tmp/tone_meas2.py /tmp/e2.bin 21600000; echo s2s3e2_P22_L5_TONE_RC=$?; fi
+[?2004lSEL [2, 2, 0, 0]
+LEVEL P22 L5 att 20.95 scale 0.5
+/tmp/e2.bin tone_dBFS -46.56 noise_bin_dBFS -118.41 tone_MHz 21.5981 peak_abs 185
+s2s3e2_P22_L5_TONE_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L5_QJS_1.jsonl > s2s3e2_P22_L5_QJS_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_QJS_1.jsonl | cut -c1-260; echo s2s3e2_P22_L5_QJS_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.9808927289999474, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.3258201930003679, "window_goodput_mbps": 48.27
+s2s3e2_P22_L5_QJS_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L5_QJ2_1.jsonl > s2s3e2_P22_L5_QJ2_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_QJ2_1.jsonl | cut -c1-260; echo s2s3e2_P22_L5_QJ2_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.007947233999971, "ok": 944, "per": 0.01666666666666672, "bit_errors": 0, "compared_bits": 15466496, "ber": 0.0, "window_elapsed_s": 0.32352768699979606, "window_good
+s2s3e2_P22_L5_QJ2_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L5_Q0_1.jsonl > s2s3e2_P22_L5_Q0_1.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_Q0_1.jsonl | cut -c1-260; echo s2s3e2_P22_L5_Q0_1_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.35989212399999815, "ok": 0, "per": 1.0, "bit_errors": 32172, "compared_bits": 1490944, "ber": 0.021578275240384616, "window_elapsed_s": 0.2875161219999427, "window_goodput_
+s2s3e2_P22_L5_Q0_1_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --fixed 0 --allow-fft-saturation --log s2s3e2_P22_L5_Q0_2.jsonl > s2s3e2_P22_L5_Q0_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_Q0_2.jsonl | cut -c1-260; echo s2s3e2_P22_L5_Q0_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 0, "elapsed_s": 0.35992614299993875, "ok": 0, "per": 1.0, "bit_errors": 27875, "compared_bits": 1310720, "ber": 0.021266937255859375, "window_elapsed_s": 0.2877874830002156, "window_goodput_
+s2s3e2_P22_L5_Q0_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --allow-fft-saturation --log s2s3e2_P22_L5_QJ2_2.jsonl > s2s3e2_P22_L5_QJ2_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_QJ2_2.jsonl | cut -c1-260; echo s2s3e2_P22_L5_QJ2_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15466496, "elapsed_s": 1.017196743999989, "ok": 944, "per": 0.01666666666666672, "bit_errors": 353, "compared_bits": 15482880, "ber": 2.2799375826719578e-05, "window_elapsed_s": 0.3232244660
+s2s3e2_P22_L5_QJ2_2_RC=0
+[?2004hroot@analog:~/lean# if [ -e /tmp/s2_stop ]; then echo STOPPED_OVERTEMP; else cd /root/lean; python3 lean_adapt.py --windows 60 --frames 16 --len 2048 --policy joint2 --calibration lean_calibration_flat.json --olla-target 0.05 --sense --allow-fft-saturation --log s2s3e2_P22_L5_QJS_2.jsonl > s2s3e2_P22_L5_QJS_2.stdout 2>&1; rc=$?; tail -1 s2s3e2_P22_L5_QJS_2.jsonl | cut -c1-260; echo s2s3e2_P22_L5_QJS_2_RC=$rc; fi
+[?2004l{"type": "summary", "completed": true, "sent": 960, "delivered_bits": 15728640, "elapsed_s": 1.988451476000023, "ok": 960, "per": 0.0, "bit_errors": 0, "compared_bits": 15728640, "ber": 0.0, "window_elapsed_s": 0.32485321400008615, "window_goodput_mbps": 48.41
+s2s3e2_P22_L5_QJS_2_RC=0
+[?2004hroot@analog:~/lean# cd /root/lean; python3 -c 'import lean_ctl as L; from lean_stability import health; c=L.Core(); t=health()["temperature_mc"]; print("LEVELCHK rxgain",c.rd(0x24),"backoff",(c.rd(0x30)>>20)&0x3F,"temp",t); assert c.rd(0x24)==1 and (c.rd(0x30)>>20)&0x3F==16 and t<75000'; rc=$?; echo LEVELCHK_RC=$rc; [ $rc = 0 ] || touch /tmp/s2_stop
+[?2004lLEVELCHK rxgain 1 backoff 16 temp 56000
+LEVELCHK_RC=0
+[?2004hroot@analog:~/lean# for f in $tx/out_altvoltage*_scale; do echo 0 > $f; done; echo SCALES_OFF_RC=$?
+[?2004lSCALES_OFF_RC=0
+[?2004hroot@analog:~/lean# for f in $tx/out_altvoltage*_scale; do echo 0 > $f; done; cd /root/lean; python3 -c 'import lean_ctl as L; print("SEL", L.tx_data_select(2, 3))'; echo -41.95 > $phy/out_voltage1_hardwaregain; echo -4 > $phy/out_voltage0_hardwaregain; echo ATT01 $(cat $phy/out_voltage0_hardwaregain) $(cat $phy/out_voltage1_hardwaregain); echo TONE_OFF_RC=$?
+[?2004lSEL [2, 2, 3, 3]
+ATT01 -4.000000 dB -41.950000 dB
+TONE_OFF_RC=0
+[?2004hroot@analog:~/lean# python3 -c 'from lean_stability import health,check_health; h=health(); print("TEMP",h["temperature_mc"]); check_health(h)'; echo HEALTH_RC=$?
+[?2004lTEMP 56000
+HEALTH_RC=0
+[?2004hroot@analog:~/lean# 

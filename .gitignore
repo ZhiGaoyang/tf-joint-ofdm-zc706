@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.jou
+*.pb
+.Xil/
+work/
+src/ip/sim/
+src/ip/fft/fft128_edif/
+src/ip/ifft/ifft_core.edf
+prebuilt/

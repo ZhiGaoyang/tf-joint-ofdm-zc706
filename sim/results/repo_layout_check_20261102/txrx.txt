@@ -1,0 +1,2 @@
+f3_l256_m0_b2_k128_7_o16_t0_0            sim_exit=0 pass=True 75.5s RXL_RESULT ok=6 bad=0 seen=6 expected=6 detections=6 overruns=0 saturations=0 tx_cmds=6 tx_samples=18240 tx_nonzero=18240 long_plateaus=0 candidate_drops=0 blind_hits=2 zero_hits=0
+ALL_PASS

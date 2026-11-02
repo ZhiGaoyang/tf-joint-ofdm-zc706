@@ -1,0 +1,836 @@
+{
+  "status": "SOURCE_SEED_INVENTORY_NOT_NATIVE_VALIDATED",
+  "part": "xc7z045ffg900-2",
+  "adi_commit": "2156ac7e874a1dc321d9f64a325009fafe563419",
+  "leaf_component_records": 131,
+  "module_references": 15,
+  "instances": [
+    {
+      "cell": "sys_ps7",
+      "vlnv": "xilinx.com:ip:processing_system7:5.5",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_iic_main",
+      "vlnv": "xilinx.com:ip:axi_iic:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "sys_concat_intc",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "sys_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "sys_200m_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hdmi_clkgen",
+      "vlnv": "analog.com:user:axi_clkgen:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hdmi_core",
+      "vlnv": "analog.com:user:axi_hdmi_tx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hdmi_dma",
+      "vlnv": "analog.com:user:axi_dmac:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "sys_audio_clkgen",
+      "vlnv": "xilinx.com:ip:clk_wiz:6.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_spdif_tx_core",
+      "vlnv": "analog.com:user:axi_spdif_tx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_sysid_0",
+      "vlnv": "analog.com:user:axi_sysid:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rom_sys_0",
+      "vlnv": "analog.com:user:sysid_rom:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "GND_1",
+      "vlnv": "xilinx.com:ip:xlconstant:1.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect",
+      "vlnv": "xilinx.com:ip:axi_interconnect:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/xbar",
+      "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/tier2_xbar_0",
+      "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/tier2_xbar_1",
+      "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/tier2_xbar_2",
+      "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/i00_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/i01_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/i02_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_cpu_interconnect/s00_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect",
+      "vlnv": "xilinx.com:ip:axi_interconnect:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/xbar",
+      "vlnv": "xilinx.com:ip:axi_crossbar:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s00_couplers/s00_data_fifo",
+      "vlnv": "xilinx.com:ip:axi_data_fifo:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s00_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s01_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s01_couplers/auto_us_df",
+      "vlnv": "xilinx.com:ip:axi_dwidth_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s02_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s02_couplers/auto_us_df",
+      "vlnv": "xilinx.com:ip:axi_dwidth_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s03_couplers/auto_us_df",
+      "vlnv": "xilinx.com:ip:axi_dwidth_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s04_couplers/s04_data_fifo",
+      "vlnv": "xilinx.com:ip:axi_data_fifo:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s04_couplers/auto_cc",
+      "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s05_couplers/s05_data_fifo",
+      "vlnv": "xilinx.com:ip:axi_data_fifo:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/s05_couplers/auto_cc",
+      "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp0_interconnect/m00_couplers/auto_pc",
+      "vlnv": "xilinx.com:ip:axi_protocol_converter:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_tx_clkgen",
+      "vlnv": "analog.com:user:axi_clkgen:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_tx_xcvr",
+      "vlnv": "analog.com:user:axi_adxcvr:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_tx_jesd/tx_axi",
+      "vlnv": "analog.com:user:axi_jesd204_tx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_tx_jesd/tx",
+      "vlnv": "analog.com:user:jesd204_tx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "util_adrv9009_tx_upack",
+      "vlnv": "analog.com:user:util_upack2:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/cdc_sync_active",
+      "vlnv": "xilinx.com:module_ref:sync_bits:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "tx_fir_interpolator/rate_gen",
+      "vlnv": "xilinx.com:module_ref:util_pulse_gen:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "tx_fir_interpolator/fir_interpolation_0",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/logic_and_0",
+      "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/out_mux_0",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "tx_fir_interpolator/fir_interpolation_1",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/logic_and_1",
+      "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/out_mux_1",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "tx_fir_interpolator/fir_interpolation_2",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/logic_and_2",
+      "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/out_mux_2",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "tx_fir_interpolator/fir_interpolation_3",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/logic_and_3",
+      "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_fir_interpolator/out_mux_3",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "VCC_1",
+      "vlnv": "xilinx.com:ip:xlconstant:1.1",
+      "module_reference": false
+    },
+    {
+      "cell": "GND_32",
+      "vlnv": "xilinx.com:ip:xlconstant:1.1",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/dac_tpl_core",
+      "vlnv": "analog.com:user:ad_ip_jesd204_tpl_dac:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/data_concat0",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/enable_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/valid_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/enable_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/valid_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/enable_slice_2",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/valid_slice_2",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/enable_slice_3",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "tx_adrv9009_tpl_core/valid_slice_3",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_tx_dma",
+      "vlnv": "analog.com:user:axi_dmac:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_ddr_cntrl",
+      "vlnv": "xilinx.com:ip:mig_7series:4.2",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_dacfifo",
+      "vlnv": "analog.com:user:axi_dacfifo:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "GND_12",
+      "vlnv": "xilinx.com:ip:xlconstant:1.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_clkgen",
+      "vlnv": "analog.com:user:axi_clkgen:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_xcvr",
+      "vlnv": "analog.com:user:axi_adxcvr:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_jesd/rx_axi",
+      "vlnv": "analog.com:user:axi_jesd204_rx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_jesd/rx",
+      "vlnv": "analog.com:user:jesd204_rx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "util_adrv9009_rx_cpack",
+      "vlnv": "analog.com:user:util_cpack2:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/adc_tpl_core",
+      "vlnv": "analog.com:user:ad_ip_jesd204_tpl_adc:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/data_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/enable_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/valid_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/data_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/enable_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/valid_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/data_slice_2",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/enable_slice_2",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/valid_slice_2",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/data_slice_3",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/enable_slice_3",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_adrv9009_tpl_core/valid_slice_3",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_fir_decimator/cdc_sync_active",
+      "vlnv": "xilinx.com:module_ref:sync_bits:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "rx_fir_decimator/fir_decimation_0",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_fir_decimator/out_mux_0",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "rx_fir_decimator/fir_decimation_1",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_fir_decimator/out_mux_1",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "rx_fir_decimator/fir_decimation_2",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_fir_decimator/out_mux_2",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "rx_fir_decimator/fir_decimation_3",
+      "vlnv": "xilinx.com:ip:fir_compiler:7.2",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_fir_decimator/out_mux_3",
+      "vlnv": "xilinx.com:module_ref:ad_bus_mux:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "axi_adrv9009_rx_dma",
+      "vlnv": "analog.com:user:axi_dmac:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_os_clkgen",
+      "vlnv": "analog.com:user:axi_clkgen:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_os_xcvr",
+      "vlnv": "analog.com:user:axi_adxcvr:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_os_jesd/rx_axi",
+      "vlnv": "analog.com:user:axi_jesd204_rx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_os_jesd/rx",
+      "vlnv": "analog.com:user:jesd204_rx:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "util_adrv9009_rx_os_cpack",
+      "vlnv": "analog.com:user:util_cpack2:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/adc_tpl_core",
+      "vlnv": "analog.com:user:ad_ip_jesd204_tpl_adc:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/data_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/enable_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/valid_slice_0",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/data_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/enable_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "rx_os_adrv9009_tpl_core/valid_slice_1",
+      "vlnv": "xilinx.com:ip:xlslice:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_adrv9009_rx_os_dma",
+      "vlnv": "analog.com:user:axi_dmac:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "util_adrv9009_xcvr",
+      "vlnv": "analog.com:user:util_adxcvr:1.0",
+      "module_reference": false
+    },
+    {
+      "cell": "adrv9009_tx_device_clk_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "adrv9009_rx_device_clk_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "adrv9009_rx_os_device_clk_rstgen",
+      "vlnv": "xilinx.com:ip:proc_sys_reset:5.0",
+      "module_reference": false
+    },
+    {
+      "cell": "logic_or",
+      "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp1_interconnect",
+      "vlnv": "xilinx.com:ip:axi_interconnect:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp2_interconnect",
+      "vlnv": "xilinx.com:ip:axi_interconnect:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "axi_hp3_interconnect",
+      "vlnv": "xilinx.com:ip:axi_interconnect:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_rf_boundary",
+      "vlnv": "xilinx.com:module_ref:ofdm_platform_boundary:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "ofdm_rf_tx_enable_concat",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_rf_tx_valid_concat",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_rf_rx_enable_concat",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_rf_rx_valid_concat",
+      "vlnv": "xilinx.com:ip:xlconcat:2.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_dma",
+      "vlnv": "xilinx.com:ip:axi_dma:7.1",
+      "module_reference": false
+    },
+    {
+      "cell": "ofdm_core",
+      "vlnv": "xilinx.com:module_ref:ofdm_development_core:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "ofdm_legacy_irq_cdc",
+      "vlnv": "xilinx.com:module_ref:sync_bits:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "ofdm_bridge_irq_cdc",
+      "vlnv": "xilinx.com:module_ref:sync_bits:1.0",
+      "module_reference": true
+    },
+    {
+      "cell": "ofdm_ctrl_cdc",
+      "vlnv": "xilinx.com:ip:axi_clock_converter:2.1",
+      "module_reference": false
+    }
+  ],
+  "external_file_fields": [
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "rom_sys_0",
+        "parameters",
+        "PATH_TO_FILE",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/mem_init_sys.txt",
+      "package_asset": "platform/inputs/mem_init_sys.txt"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "tx_fir_interpolator",
+        "components",
+        "fir_interpolation_0",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "tx_fir_interpolator",
+        "components",
+        "fir_interpolation_1",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "tx_fir_interpolator",
+        "components",
+        "fir_interpolation_2",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "tx_fir_interpolator",
+        "components",
+        "fir_interpolation_3",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "axi_ddr_cntrl",
+        "parameters",
+        "XML_INPUT_FILE",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/zc706_plddr3_mig.prj",
+      "package_asset": "platform/inputs/zc706_plddr3_mig.prj"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "rx_fir_decimator",
+        "components",
+        "fir_decimation_0",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "rx_fir_decimator",
+        "components",
+        "fir_decimation_1",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "rx_fir_decimator",
+        "components",
+        "fir_decimation_2",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    },
+    {
+      "json_keys": [
+        "design",
+        "components",
+        "rx_fir_decimator",
+        "components",
+        "fir_decimation_3",
+        "parameters",
+        "Coefficient_File",
+        "value"
+      ],
+      "historical_value": "D:/FPGA_COMPETITION/build/ofdm_platform_impl/20261017_01/physical02/inputs/coefile_int.coe",
+      "package_asset": "platform/inputs/coefile_int.coe"
+    }
+  ],
+  "tx_clock_seed_net": {
+    "name": "adrv9009_tx_device_clk",
+    "definition": {
+      "ports": [
+        "axi_adrv9009_tx_clkgen/clk_0",
+        "adrv9009_tx_device_clk_rstgen/slowest_sync_clk",
+        "util_adrv9009_xcvr/tx_clk_0",
+        "util_adrv9009_xcvr/tx_clk_3",
+        "util_adrv9009_xcvr/tx_clk_2",
+        "util_adrv9009_xcvr/tx_clk_1",
+        "axi_adrv9009_tx_jesd/device_clk",
+        "axi_adrv9009_tx_jesd/link_clk",
+        "tx_adrv9009_tpl_core/link_clk",
+        "util_adrv9009_tx_upack/clk",
+        "tx_fir_interpolator/aclk",
+        "axi_adrv9009_dacfifo/dac_clk",
+        "ofdm_core/tx_clk"
+      ]
+    }
+  },
+  "required_native_deltas": [
+    "Localize the 10 recorded asset fields to a fresh output tree before opening BD",
+    "Bind matching current core stub/interface and check existing address/port contract",
+    "Update module reference to accepted RF boundary source; add tx_clk and connect to exact existing ofdm_core/tx_clk net",
+    "Set boundary DEV_TX_ENABLE=1 as in accepted development image",
+    "Generate vendor IP from catalog and pinned ADI source without recovered historical cache",
+    "Preserve all four XDC files and scoped XPM constraints; validate/reopen BD before synthesis"
+  ],
+  "not_claimed": [
+    "Current platform topology already reproduced",
+    "Vivado validation or output products generated",
+    "Source-to-bitstream clean build",
+    "Third-party redistribution approved"
+  ]
+}

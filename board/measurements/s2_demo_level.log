@@ -1,0 +1,19 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# sh /tmp/demo_level.sh; echo LEVEL_RC=$?
+[?2004lsh: 0: cannot open /tmp/demo_level.sh: No such file
+LEVEL_RC=2
+[?2004hroot@analog:~/lean# ^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# sh /root/lean/demo_level.sh; echo LEVEL_RC=$?
+[?2004lDEMO /tmp/demo_083130_1042.jsonl tone-off windows 800 evm p50 4.314298993661781
+DEMO /tmp/demo_083138_1042.jsonl tone-off windows 300 evm p50 4.358039429247086
+DEMO /tmp/demo_083148_1042.jsonl tone-off windows 15 evm p50 5.535449627033294
+OFDMPWR blk_dBFS p10 -41.9 p50 -41.8 p90 -41.8 max -41.8 peak_abs 1593
+{"sent": 12800, "ok": 12800, "crc_fail": 0, "header_fail": 0, "truncated": 0, "per": 0.0, "compared_bits": 419430400, "bit_errors": 0, "ber": 0.0, "evm": 4.289663695777295, "goodput_mbps": 124.6693927
+SEL [2, 2, 0, 0]
+TONE tone_dBFS -58.96 noise_bin_dBFS -118.31 tone_MHz 21.5981 peak_abs 209
+TOP5 21.598MHz:57.6dB 0.000MHz:21.9dB -0.002MHz:20.5dB 29.760MHz:18.6dB -50.880MHz:17.2dB
+TEMP 57000
+LEVEL_RC=0
+[?2004hroot@analog:~/lean# 

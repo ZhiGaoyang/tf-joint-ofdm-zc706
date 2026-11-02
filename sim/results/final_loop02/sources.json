@@ -1,0 +1,102 @@
+﻿[
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_rx_metric_registered.v",
+        "sha256":  "5239B9705A4DB543E7D9FFC619D117DA8E01E4DACA283A8FAA2CC1C91577E9BC"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_rx_equalize.v",
+        "sha256":  "C184B3FED4A60F912CDCF65A192AF8237AAF36438F06F27976C398E5425D1930"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_rx_cpe_phase.v",
+        "sha256":  "55E28C5325F7B2F19496379D136E60F7B7D6727097ED79CF81D8C9F7560F1A19"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_dcblock.v",
+        "sha256":  "F06403B13358CEE8EF083CED4A983D7371264E577AA2621A02845A8CAE833E38"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_ring.v",
+        "sha256":  "AD1741368DEABB2C46F2EFEE2C0A8E51F4F0E7B8D85FAB1E478DDA854C83841E"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_detect.v",
+        "sha256":  "7B3456777E9661867BDAF4FFDF273B4E373B6C67428BB7E855B98CE4E6C454BE"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_fetch.v",
+        "sha256":  "70A67437D299D5C3F80D3DD877E8A270CCCE079C3C580217BB43A7FAA0DCA2CB"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_fft.v",
+        "sha256":  "56BCB47644C148EF1D6630D43434BD770FFEFCDA34A12AA81BD488C82224885A"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_coeff.v",
+        "sha256":  "8C4CADCCD075CD3611F2621A0F81DDB572EE52099284EC849611848B20670348"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_chan.v",
+        "sha256":  "38786189C5613448C85B0783E264B9D120BA0D3EC54C75A9DB794B581BE4B516"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\rxs\\ofdm_rxs_cpe.v",
+        "sha256":  "9D1CE1C0785EA1227DC9FECA0524C9F80CED1134A76F5FE598921A1EF2EBF4AF"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_ifft_stream.v",
+        "sha256":  "6E7C55EE6AEC098752EDC0FF63EAD99BEB4DC2B2AA3235AD75D6DE7EAB2D6EC3"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_cp_insert.v",
+        "sha256":  "FC1E1D8008CDC5E5B551C6115B4E0B4329683AD40AB4BCD2501AAD60A627CD2F"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\phy\\ofdm_training_mux.v",
+        "sha256":  "35592F420C3D8FCCE459E9C7C7E0A3AF5613795884E3F8EC5671CFFCD3BF76B5"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\txs\\ofdm_tx_mapper_v2.v",
+        "sha256":  "FB08C2F5B15618B1A5BEFED7D47F0D8BA9C942DBBA42B7C864FE1F455F705237"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm\\txs\\ofdm_tx_prbs_source.v",
+        "sha256":  "5DF9C684D95BF26551E074ED277E2D60667F39B83B712697C78F422A61943746"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\rxs\\ofdm_rxs_cmetric.v",
+        "sha256":  "96347291BD9D17A945D8138DA47ECF743A5FBD8D89C5CB6984E543F5D902E78B"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\rxs\\ofdm_rxs_decode.v",
+        "sha256":  "8403D1D3E0B30B283886E611E2D33D9A125E5B5558BFE41E45ACFB4F44DE2F74"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\rxs\\ofdm_rxs_core.v",
+        "sha256":  "44E4B6DCF8A716E13614531ADE27D9130E1741AB2B1D264A355680590D3B3842"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\phy\\ofdm_carrier_loader.v",
+        "sha256":  "1CF476230F608568FB163E4FF3FD036A9ABC3064902539721702A4B44EE4763D"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\txs\\ofdm_tx_framer_v2.v",
+        "sha256":  "08C78C0BD581B4A29FE3B88CCC8B11E3F8D0A86EB9F59513E5C6D08CE4E8C1A1"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\txs\\ofdm_frame_grid_v2.v",
+        "sha256":  "1495D998CCD6AD144074DE2356FDD4FBF99C4F521D16FA2E3803341E63639212"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\txs\\ofdm_tx_frame_v2.v",
+        "sha256":  "BE11C692407332A25B0141EF109B4EBECC05096E9ED0F46BFA7D09179236747D"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\tests\\rtl\\ofdm_nc\\tb_nc_txrx_loop.sv",
+        "sha256":  "72E2897D38506C0866D235F761BB79B21B97892A23894B50DB7A89F272422246"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc\\phy\\ofdm_nc_map.vh",
+        "sha256":  "DBECE355AE63BB96395C0ED230840962160DAC24E0E7EA83A08658B8CAA77B08"
+    }
+]

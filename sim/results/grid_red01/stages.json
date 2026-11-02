@@ -1,0 +1,22 @@
+﻿[
+    {
+        "stage":  "vectors",
+        "exit_code":  0,
+        "seconds":  0.6811775
+    },
+    {
+        "stage":  "design",
+        "exit_code":  0,
+        "seconds":  1.3191659999999998
+    },
+    {
+        "stage":  "bench",
+        "exit_code":  0,
+        "seconds":  1.2740498999999998
+    },
+    {
+        "stage":  "elaborate",
+        "exit_code":  1,
+        "seconds":  1.2875302
+    }
+]

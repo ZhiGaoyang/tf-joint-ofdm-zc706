@@ -1,0 +1,99 @@
+﻿[
+    {
+        "stage":  "xvhdl.out",
+        "exit_code":  0,
+        "seconds":  2.2142649999999997
+    },
+    {
+        "stage":  "xvlog.out",
+        "exit_code":  0,
+        "seconds":  2.7535621999999997
+    },
+    {
+        "stage":  "xvlog_tb.out",
+        "exit_code":  0,
+        "seconds":  2.1771295
+    },
+    {
+        "stage":  "xelab.out",
+        "exit_code":  0,
+        "seconds":  43.073783
+    },
+    {
+        "stage":  "nc_switch",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  130.56395419999998,
+        "check":  "{\"ok\": 15, \"expected_ok\": 15, \"any_frames\": 0, \"any_ok\": 0, \"records\": 15, \"header_fail\": 0, \"stats\": {\"samples\": 36215, \"detections\": 15, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 15, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 15, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 3}, \"nc\": {\"blind_hits\": 9, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 1, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "nc_impaired",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  113.37745079999999,
+        "check":  "{\"ok\": 10, \"expected_ok\": 10, \"any_frames\": 0, \"any_ok\": 0, \"records\": 10, \"header_fail\": 0, \"stats\": {\"samples\": 29976, \"detections\": 10, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 10, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 10, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 0}, \"nc\": {\"blind_hits\": 6, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 1, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "nc_tone",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  97.132063399999993,
+        "check":  "{\"ok\": 6, \"expected_ok\": 6, \"any_frames\": 2, \"any_ok\": 1, \"records\": 8, \"header_fail\": 0, \"stats\": {\"samples\": 25339, \"detections\": 8, \"long_plateaus\": 2, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 8, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 8, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 0}, \"nc\": {\"blind_hits\": 3, \"zero_hits\": 0, \"last_ok\": 128, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "nc_lmax",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  395.07948919999995,
+        "check":  "{\"ok\": 5, \"expected_ok\": 5, \"any_frames\": 0, \"any_ok\": 0, \"records\": 6, \"header_fail\": 1, \"stats\": {\"samples\": 96239, \"detections\": 6, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 6, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 6, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 1}, \"nc\": {\"blind_hits\": 4, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 1, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "nc_noblind",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  64.276361,
+        "check":  "{\"ok\": 3, \"expected_ok\": 3, \"any_frames\": 0, \"any_ok\": 0, \"records\": 6, \"header_fail\": 3, \"stats\": {\"samples\": 19719, \"detections\": 6, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 6, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 6, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 0}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "clean_mixed",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  111.8688959,
+        "check":  "{\"ok\": 14, \"expected_ok\": 14, \"any_frames\": 0, \"any_ok\": 0, \"records\": 14, \"header_fail\": 0, \"stats\": {\"samples\": 40615, \"detections\": 14, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 14, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 14, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 2}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "impaired",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  73.0093527,
+        "check":  "{\"ok\": 12, \"expected_ok\": 12, \"any_frames\": 0, \"any_ok\": 0, \"records\": 12, \"header_fail\": 0, \"stats\": {\"samples\": 34136, \"detections\": 12, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 12, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 12, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 1}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "bad_frames",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  56.0778283,
+        "check":  "{\"ok\": 5, \"expected_ok\": 5, \"any_frames\": 0, \"any_ok\": 0, \"records\": 8, \"header_fail\": 2, \"stats\": {\"samples\": 25910, \"detections\": 8, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 8, \"overruns\": 0, \"saturations\": 4, \"train_ok\": 8, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 5}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "dense_min",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  66.869700999999992,
+        "check":  "{\"ok\": 24, \"expected_ok\": 24, \"any_frames\": 0, \"any_ok\": 0, \"records\": 24, \"header_fail\": 0, \"stats\": {\"samples\": 29149, \"detections\": 24, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 24, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 24, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 1}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "max_frames",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  127.7261291,
+        "check":  "{\"ok\": 3, \"expected_ok\": 3, \"any_frames\": 0, \"any_ok\": 0, \"records\": 3, \"header_fail\": 0, \"stats\": {\"samples\": 56839, \"detections\": 3, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 3, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 3, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 1}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    },
+    {
+        "stage":  "low_level",
+        "exit_code":  0,
+        "check_exit":  0,
+        "seconds":  37.5452526,
+        "check":  "{\"ok\": 8, \"expected_ok\": 8, \"any_frames\": 0, \"any_ok\": 0, \"records\": 8, \"header_fail\": 0, \"stats\": {\"samples\": 21919, \"detections\": 8, \"long_plateaus\": 0, \"busy_drops\": 0, \"candidate_drops\": 0, \"frames\": 8, \"overruns\": 0, \"saturations\": 0, \"train_ok\": 8, \"train_reject\": 0, \"dropped_symbols\": 0, \"cpe_undefined\": 2}, \"nc\": {\"blind_hits\": 0, \"zero_hits\": 0, \"last_ok\": 0, \"last_src\": 0, \"blind_over\": 0}, \"problems\": []}"
+    }
+]

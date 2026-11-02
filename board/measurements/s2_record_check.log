@@ -1,0 +1,12 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# cd /root/lean; ls -t demo_logs/demo_*.jsonl | head -3; python3 demo_diag.py "$(ls -t demo_logs/demo_*.jsonl | head -3 | tr '\n' ' ' | cut -d' ' -f1)"; for f in $(ls -t demo_logs/demo_*.jsonl | head -3); do python3 demo_diag.py $f | head -1; done; python3 -c 'from lean_stability import health; print("TEMP",health()["temperature_mc"])'
+[?2004ldemo_logs/demo_094412_1181.jsonl
+demo_logs/demo_094349_1181.jsonl
+demo_logs/demo_094332_1181.jsonl
+LOG demo_094412_1181.jsonl windows 300 ok 4800/4800 {'train_ok': 4800, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+LOG demo_094412_1181.jsonl windows 300 ok 4800/4800 {'train_ok': 4800, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+LOG demo_094349_1181.jsonl windows 1000 ok 15984/16000 {'train_ok': 16000, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+LOG demo_094332_1181.jsonl windows 2500 ok 25600/40000 {'train_ok': 40000, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+TEMP 56000
+[?2004hroot@analog:~/lean# 

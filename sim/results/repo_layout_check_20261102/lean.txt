@@ -1,0 +1,36 @@
+LEAN_ID 4f464442
+LEAN_POLL t=128027500 status=0000620e issued=6 det=6 crc_ok=4 tstate=3 ready_phy=1 ready_tx=1 prefilled=1 rxvalid=3 ad_valid=0 tx_samples=15360
+LEAN_BURST frames=6 len=256 mcs=0 issued=6 det=6 hdr_fail=0 crc_ok=6 crc_fail=0 ber=0 cmp=12288 status=0000621e
+LEAN_BURST frames=4 len=300 mcs=1 issued=4 det=10 hdr_fail=0 crc_ok=10 crc_fail=0 ber=0 cmp=21888 status=0000621e
+LEAN_BURST frames=8 len=0 mcs=0 issued=8 det=18 hdr_fail=0 crc_ok=18 crc_fail=0 ber=0 cmp=21888 status=0000621e
+LEAN_TXGAIN 2
+LEAN_POLL t=456407500 status=0000621e issued=4 det=22 crc_ok=22 tstate=3 ready_phy=1 ready_tx=1 prefilled=1 rxvalid=3 ad_valid=1 tx_samples=10240
+LEAN_BURST frames=4 len=512 mcs=1 issued=4 det=22 hdr_fail=0 crc_ok=22 crc_fail=0 ber=0 cmp=38272 status=0000621e
+LEAN_BURST frames=5 len=100 mcs=0 issued=5 det=5 hdr_fail=0 crc_ok=5 crc_fail=0 ber=0 cmp=4000 status=0000621e
+LEAN_LOOPBACK ctrl=00000013
+LEAN_NC version=20261025
+LEAN_NC reset cfg ok hdr_thr=185360
+LEAN_POLL t=692037500 status=0000621e issued=4 det=4 crc_ok=4 tstate=3 ready_phy=1 ready_tx=1 prefilled=1 rxvalid=3 ad_valid=1 tx_samples=10880
+LEAN_BURST frames=4 len=256 mcs=0 issued=4 det=4 hdr_fail=0 crc_ok=4 crc_fail=0 ber=0 cmp=8192 status=0000621e
+LEAN_NC syms_hdr=8
+LEAN_NC syms_pay=52
+LEAN_NC metric d=0 hdr=2 pay=13 erase=0
+LEAN_NC metric d=56 hdr=522589 pay=6 erase=0
+LEAN_NC metric d=63 hdr=522467 pay=8 erase=0
+LEAN_NC tx_status=00050080
+LEAN_NC last_mask=00000080
+LEAN_NC rx_cnt=00000001
+LEAN_NC rx_last=00800080
+LEAN_NC metric_ctrl=00000000
+LEAN_POLL t=829047500 status=0000620e issued=2 det=6 crc_ok=5 tstate=3 ready_phy=1 ready_tx=1 prefilled=1 rxvalid=3 ad_valid=1 tx_samples=16647
+LEAN_BURST frames=2 len=2000 mcs=1 issued=2 det=6 hdr_fail=0 crc_ok=6 crc_fail=0 ber=0 cmp=40192 status=0000621e
+LEAN_NC last_mask=00000007
+LEAN_NC rx_last=00070007
+LEAN_NC illegal status=000063e7 tx_status=0003880f crc_ok=6 issued=1
+LEAN_POLL t=1356442500 status=0000620e issued=3 det=9 crc_ok=8 tstate=3 ready_phy=1 ready_tx=1 prefilled=1 rxvalid=3 ad_valid=0 tx_samples=14400
+LEAN_BURST frames=3 len=512 mcs=0 issued=3 det=9 hdr_fail=0 crc_ok=9 crc_fail=0 ber=0 cmp=52480 status=0000621e
+LEAN_NC last_mask=00000400
+LEAN_NC midburst last_mask=00000001 crc_ok=12 hdr_fail=0
+LEAN_DONE failures=0
+LEAN_PASS
+sim_exit=0 667.6s

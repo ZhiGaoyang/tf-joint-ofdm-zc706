@@ -1,0 +1,14 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# cd /root/lean; sh rx_spikes.sh; echo SP_RC=$?
+[?2004lSPIKES noise1 n 1048576 rms 10.5 peak 221 >5rms 20 >8rms 12 top 240958:151 240997:156 241048:192 241079:221 241128:128
+SPIKES noise2 n 1048576 rms 10.5 peak 135 >5rms 21 >8rms 8 top 826180:121 826222:135 826236:108 826253:126 826274:112
+SPIKES noise3 n 1048576 rms 10.5 peak 175 >5rms 18 >8rms 9 top 480318:103 480384:175 480408:112 480436:125 480456:128
+SPIKES tone1 n 1048576 rms 39.4 peak 229 >5rms 1 >8rms 0 top 272772:96 933262:229 933278:98 933319:117 933535:104
+SPIKES tone2 n 1048576 rms 39.4 peak 164 >5rms 0 >8rms 0 top 783471:164 783510:163 783782:133 783877:143 783883:131
+SPIKES tone3 n 1048576 rms 39.4 peak 102 >5rms 0 >8rms 0 top 199038:77 404459:94 951105:102 974278:80 990340:81
+SPIKES ofdm1 n 1048576 rms 270.3 peak 1834 >5rms 64 >8rms 0 top 150648:1766 242168:1834 242328:1831 394968:1805 395128:1795
+{"sent": 12800, "ok": 12799, "crc_fail": 1, "header_fail": 0, "truncated": 0, "per": 7.812500000003997e-05, "compared_bi
+TEMP 58000
+SP_RC=0
+[?2004hroot@analog:~/lean# 

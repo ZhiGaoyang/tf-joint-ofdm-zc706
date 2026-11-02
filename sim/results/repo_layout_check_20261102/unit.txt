@@ -1,0 +1,3 @@
+{"cycles": 30020, "reads": 1602, "final_words": 386}
+cmetric_vectors pass=True; cancel pass=True
+ALL_PASS

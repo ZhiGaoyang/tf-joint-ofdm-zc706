@@ -1,0 +1,1 @@
+tx=; for d in /sys/bus/iio/devices/iio:device*; do [ "$(cat $d/name)" = axi-adrv9009-tx-hpc ] && tx=$d; done; uptime; for f in $tx/out_altvoltage*_frequency $tx/out_altvoltage*_scale; do echo "$(basename $f) $(cat $f)"; done; echo DDSREAD_RC=$?

@@ -1,0 +1,2 @@
+# store every file byte-for-byte (SHA256 checks in build scripts and evidence depend on exact bytes)
+* -text

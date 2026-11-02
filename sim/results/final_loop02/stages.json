@@ -1,0 +1,64 @@
+﻿[
+    {
+        "stage":  "xvhdl.out",
+        "exit_code":  0,
+        "seconds":  2.1550476
+    },
+    {
+        "stage":  "xvlog.out",
+        "exit_code":  0,
+        "seconds":  2.8036064
+    },
+    {
+        "stage":  "xvlog_tb.out",
+        "exit_code":  0,
+        "seconds":  2.1854071
+    },
+    {
+        "stage":  "xelab.out",
+        "exit_code":  0,
+        "seconds":  57.848704899999994
+    },
+    {
+        "stage":  "f4_l64_m0_b2_k0_0_o10_t0_0",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  115.31123579999999,
+        "result":  "RXL_RESULT ok=8 bad=0 seen=8 expected=8 detections=8 overruns=0 saturations=0 tx_cmds=8 tx_samples=10240 tx_nonzero=10240 long_plateaus=0 candidate_drops=0 blind_hits=0 zero_hits=0"
+    },
+    {
+        "stage":  "f3_l256_m0_b2_k128_7_o16_t0_0",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  192.8791128,
+        "result":  "RXL_RESULT ok=6 bad=0 seen=6 expected=6 detections=6 overruns=0 saturations=0 tx_cmds=6 tx_samples=18240 tx_nonzero=18240 long_plateaus=0 candidate_drops=0 blind_hits=2 zero_hits=0"
+    },
+    {
+        "stage":  "f2_l2000_m1_b2_k1024_292_o16_t0_0",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  401.1417588,
+        "result":  "RXL_RESULT ok=4 bad=0 seen=4 expected=4 detections=4 overruns=0 saturations=0 tx_cmds=4 tx_samples=39040 tx_nonzero=39040 long_plateaus=0 candidate_drops=0 blind_hits=2 zero_hits=0"
+    },
+    {
+        "stage":  "f1_l2988_m0_b1_k7_7_o16_t0_0",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  236.4605609,
+        "result":  "RXL_RESULT ok=1 bad=0 seen=1 expected=1 detections=1 overruns=0 saturations=0 tx_cmds=1 tx_samples=30560 tx_nonzero=30560 long_plateaus=0 candidate_drops=0 blind_hits=1 zero_hits=0"
+    },
+    {
+        "stage":  "f1_l4096_m1_b1_k7_7_o16_t0_0",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  148.3822765,
+        "result":  "RXL_RESULT ok=1 bad=0 seen=1 expected=1 detections=1 overruns=0 saturations=0 tx_cmds=1 tx_samples=21280 tx_nonzero=21280 long_plateaus=0 candidate_drops=0 blind_hits=1 zero_hits=0"
+    },
+    {
+        "stage":  "f3_l512_m0_b2_k128_128_o16_t17_300",
+        "exit_code":  0,
+        "pass":  true,
+        "seconds":  172.7897413,
+        "result":  "RXL_RESULT ok=6 bad=0 seen=6 expected=6 detections=6 overruns=0 saturations=112 tx_cmds=6 tx_samples=28800 tx_nonzero=28800 long_plateaus=2 candidate_drops=0 blind_hits=1 zero_hits=0"
+    }
+]

@@ -1,0 +1,27 @@
+﻿[
+    {
+        "stage":  "xvhdl.out",
+        "exit_code":  0,
+        "seconds":  1.9593379
+    },
+    {
+        "stage":  "xvlog.out",
+        "exit_code":  0,
+        "seconds":  2.7448083999999997
+    },
+    {
+        "stage":  "xvlog_tb.out",
+        "exit_code":  0,
+        "seconds":  2.4689239
+    },
+    {
+        "stage":  "xelab.out",
+        "exit_code":  0,
+        "seconds":  63.6311793
+    },
+    {
+        "stage":  "simulate",
+        "exit_code":  0,
+        "seconds":  1234.4020847
+    }
+]

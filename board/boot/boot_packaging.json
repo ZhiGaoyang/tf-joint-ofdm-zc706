@@ -1,0 +1,41 @@
+{
+  "status": "DEVELOPMENT_BOOT_PACKAGED_NOT_DEPLOYED",
+  "image": "NC group masking after independent review fixes F1-F3, VERSION 0x20261025",
+  "bootgen_exit": 0,
+  "readback_exit": 0,
+  "image_headers": 3,
+  "files": [
+    {
+      "name": "BOOT.BIN",
+      "bytes": 13958872,
+      "sha256": "0b3ce7eeea7f894b6f3a78f1794465933a33c3fef5b2c5e881dddede35b03e64"
+    },
+    {
+      "name": "system_top.bit",
+      "bytes": 13321510,
+      "sha256": "bcbb492e028d8fc491f6af58a7d706e1ff87f969f02b7484c1e98caf7e81b86c"
+    },
+    {
+      "name": "fsbl.elf",
+      "bytes": 473604,
+      "sha256": "89665b74a800ddc1e7e46b2f63b1f3aef096c87ac45d991f120a20ead3aa9483"
+    },
+    {
+      "name": "u-boot_zynq_zc706.elf",
+      "bytes": 4058076,
+      "sha256": "b033c44adbadca2912e1f97c445ef23fcdb80c9f5cb4ca0a1c6924fdb76cbaad"
+    },
+    {
+      "name": "zynq.bif",
+      "bytes": 84,
+      "sha256": "69dc2347d87e4942757213ad6d2fe06b7ff87d41b5f63fc716074c8333a3cf48"
+    }
+  ],
+  "bitstream_source": "build/ofdm_nc/platform_impl02/system_top.bit (routed WNS +0.029 WHS +0.035, all constraints met)",
+  "fsbl_uboot_source": "build/devboot/dev_status_cdc_20261024 (same SHA as the CDC candidate package)",
+  "supersedes": "build/devboot/dev_nc_20261025 (pre-review image b50e0510..., never deployed)",
+  "rollback": {
+    "cdc_candidate_boot_sha256": "d7544c739de509af1e9bd581e1754cd61c8618ce3ca32c0d84fbd0e030152015"
+  },
+  "board_written": false
+}

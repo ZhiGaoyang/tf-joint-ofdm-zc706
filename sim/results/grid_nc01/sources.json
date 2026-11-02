@@ -1,0 +1,26 @@
+﻿[
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc/txs/ofdm_tx_framer_v2.v",
+        "sha256":  "08C78C0BD581B4A29FE3B88CCC8B11E3F8D0A86EB9F59513E5C6D08CE4E8C1A1"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc/phy/ofdm_carrier_loader.v",
+        "sha256":  "1CF476230F608568FB163E4FF3FD036A9ABC3064902539721702A4B44EE4763D"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm_nc/txs/ofdm_frame_grid_v2.v",
+        "sha256":  "1495D998CCD6AD144074DE2356FDD4FBF99C4F521D16FA2E3803341E63639212"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm/txs/ofdm_tx_mapper_v2.v",
+        "sha256":  "FB08C2F5B15618B1A5BEFED7D47F0D8BA9C942DBBA42B7C864FE1F455F705237"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION\\rtl\\ofdm/phy/ofdm_training_mux.v",
+        "sha256":  "35592F420C3D8FCCE459E9C7C7E0A3AF5613795884E3F8EC5671CFFCD3BF76B5"
+    },
+    {
+        "path":  "D:\\FPGA_COMPETITION/tests/rtl/ofdm_nc/tb_nc_grid.sv",
+        "sha256":  "73D3037DB8DA26D9821553BAAD72D1A529CACA9FA06B6FCDB2032641ACCD6DBA"
+    }
+]

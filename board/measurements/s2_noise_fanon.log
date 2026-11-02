@@ -1,0 +1,11 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# cd /root/lean; sh noise_only.sh; python3 -c 'from lean_stability import health; print("TEMP", health()["temperature_mc"])'
+[?2004lSPIKES noise1 n 1048576 rms 10.5 peak 38 >5rms 0 >8rms 0 top 100114:37 158749:36 618856:37 811778:38 982445:38
+SPIKES noise2 n 1048576 rms 10.5 peak 38 >5rms 0 >8rms 0 top 9702:38 67024:37 189381:38 456334:37 700810:38
+SPIKES noise3 n 1048576 rms 10.5 peak 38 >5rms 0 >8rms 0 top 89238:36 282518:37 353125:38 528915:36 647276:36
+SPIKES noise4 n 1048576 rms 10.5 peak 41 >5rms 0 >8rms 0 top 169193:38 216223:38 427115:39 462094:41 499651:37
+SPIKES noise5 n 1048576 rms 10.5 peak 42 >5rms 0 >8rms 0 top 141765:42 246614:40 327821:37 664996:36 797731:36
+ATT -41.950000 dB -41.950000 dB
+TEMP 63000
+[?2004hroot@analog:~/lean# 

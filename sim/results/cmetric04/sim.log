@@ -1,0 +1,18 @@
+ECHO 处于关闭状态。
+ECHO 处于关闭状态。
+
+****** xsim v2023.2 (64-bit)
+  **** SW Build 4029153 on Fri Oct 13 20:14:34 MDT 2023
+  **** IP Build 4028589 on Sat Oct 14 00:45:43 MDT 2023
+  **** SharedData Build 4025554 on Tue Oct 10 17:18:54 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/cm/xsim_script.tcl
+# xsim {cm} -testplusarg CYCLES=30020 -testplusarg READS=1602 -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+CMETRIC_PASS cycles=30020 reads=1602 final=386
+$finish called at time : 159767500 ps : File "D:/FPGA_COMPETITION/tests/rtl/ofdm_nc/tb_nc_cmetric.sv" Line 64
+exit
+INFO: [Common 17-206] Exiting xsim at Mon Oct 26 07:15:23 2026...

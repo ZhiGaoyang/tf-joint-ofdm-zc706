@@ -1,0 +1,88 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2023.2 (win64) Build 4029153 Fri Oct 13 20:14:34 MDT 2023
+| Date         : Mon Oct 26 08:37:00 2026
+| Host         : build-host running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 3 -file D:/FPGA_COMPETITION/build/ofdm_nc/platform_impl02/routed_hierarchy.rpt
+| Design       : system_top
+| Device       : xc7z045ffg900-2
+| Speed File   : -2
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++----------------------------------------+-------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|                Instance                |                   Module                  | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++----------------------------------------+-------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| system_top                             |                                     (top) |      72729 |      64220 |    5220 | 3289 | 89716 |     59 |     16 |        176 |
+|   (system_top)                         |                                     (top) |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|   i_system_wrapper                     |                            system_wrapper |      72729 |      64220 |    5220 | 3289 | 89716 |     59 |     16 |        176 |
+|     (i_system_wrapper)                 |                            system_wrapper |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     system_i                           |                                    system |      72729 |      64220 |    5220 | 3289 | 89716 |     59 |     16 |        176 |
+|       (system_i)                       |                                    system |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       adrv9009_rx_device_clk_rstgen    |    system_adrv9009_rx_device_clk_rstgen_0 |         17 |         16 |       0 |    1 |    33 |      0 |      0 |          0 |
+|       adrv9009_rx_os_device_clk_rstgen | system_adrv9009_rx_os_device_clk_rstgen_0 |         17 |         16 |       0 |    1 |    33 |      0 |      0 |          0 |
+|       adrv9009_tx_device_clk_rstgen    |    system_adrv9009_tx_device_clk_rstgen_0 |         17 |         16 |       0 |    1 |    33 |      0 |      0 |          0 |
+|       axi_adrv9009_dacfifo             |             system_axi_adrv9009_dacfifo_0 |       1444 |       1444 |       0 |    0 |  5260 |     34 |      1 |          0 |
+|       axi_adrv9009_rx_clkgen           |           system_axi_adrv9009_rx_clkgen_0 |        118 |        118 |       0 |    0 |   287 |      0 |      0 |          0 |
+|       axi_adrv9009_rx_dma              |              system_axi_adrv9009_rx_dma_0 |        488 |        456 |      32 |    0 |   901 |      1 |      0 |          0 |
+|       axi_adrv9009_rx_jesd             |           axi_adrv9009_rx_jesd_imp_F03Z8L |       1342 |        946 |     396 |    0 |  1573 |      0 |      0 |          0 |
+|       axi_adrv9009_rx_os_clkgen        |        system_axi_adrv9009_rx_os_clkgen_0 |        118 |        118 |       0 |    0 |   287 |      0 |      0 |          0 |
+|       axi_adrv9009_rx_os_dma           |           system_axi_adrv9009_rx_os_dma_0 |        488 |        456 |      32 |    0 |   901 |      1 |      0 |          0 |
+|       axi_adrv9009_rx_os_jesd          |       axi_adrv9009_rx_os_jesd_imp_1VXWXLF |       1339 |        943 |     396 |    0 |  1572 |      0 |      0 |          0 |
+|       axi_adrv9009_rx_os_xcvr          |          system_axi_adrv9009_rx_os_xcvr_0 |       1391 |       1385 |       0 |    6 |  1869 |      0 |      0 |          0 |
+|       axi_adrv9009_rx_xcvr             |             system_axi_adrv9009_rx_xcvr_0 |       1389 |       1385 |       0 |    4 |  1869 |      0 |      0 |          0 |
+|       axi_adrv9009_tx_clkgen           |           system_axi_adrv9009_tx_clkgen_0 |        118 |        118 |       0 |    0 |   287 |      0 |      0 |          0 |
+|       axi_adrv9009_tx_dma              |              system_axi_adrv9009_tx_dma_0 |        499 |        471 |      28 |    0 |   915 |      2 |      0 |          0 |
+|       axi_adrv9009_tx_jesd             |          axi_adrv9009_tx_jesd_imp_15VZ08O |       1018 |       1018 |       0 |    0 |  1360 |      0 |      0 |          0 |
+|       axi_adrv9009_tx_xcvr             |             system_axi_adrv9009_tx_xcvr_0 |        872 |        870 |       0 |    2 |  1163 |      0 |      0 |          0 |
+|       axi_cpu_interconnect             |             system_axi_cpu_interconnect_0 |       2805 |       2620 |       0 |  185 |  2998 |      0 |      0 |          0 |
+|       axi_ddr_cntrl                    |                    system_axi_ddr_cntrl_0 |      13795 |      11628 |    1570 |  597 | 11979 |      0 |      0 |          0 |
+|       axi_hdmi_clkgen                  |                  system_axi_hdmi_clkgen_0 |        115 |        115 |       0 |    0 |   287 |      0 |      0 |          0 |
+|       axi_hdmi_core                    |                    system_axi_hdmi_core_0 |        618 |        611 |       0 |    7 |  1331 |      1 |      0 |          9 |
+|       axi_hdmi_dma                     |                     system_axi_hdmi_dma_0 |        541 |        531 |      10 |    0 |   671 |      1 |      0 |          0 |
+|       axi_hp0_interconnect             |             system_axi_hp0_interconnect_0 |       3793 |       3142 |     638 |   13 |  4848 |      6 |      3 |          0 |
+|       axi_hp1_interconnect             |             system_axi_hp1_interconnect_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       axi_hp2_interconnect             |             system_axi_hp2_interconnect_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       axi_hp3_interconnect             |             system_axi_hp3_interconnect_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       axi_iic_main                     |                     system_axi_iic_main_0 |        381 |        371 |       0 |   10 |   374 |      0 |      0 |          0 |
+|       axi_rstgen                       |                       system_axi_rstgen_0 |         17 |         16 |       0 |    1 |    33 |      0 |      0 |          0 |
+|       axi_spdif_tx_core                |                system_axi_spdif_tx_core_0 |        168 |        146 |      22 |    0 |   143 |      0 |      0 |          0 |
+|       axi_sysid_0                      |                      system_axi_sysid_0_0 |        100 |        100 |       0 |    0 |   206 |      0 |      0 |          0 |
+|       logic_or                         |                         system_logic_or_0 |          1 |          1 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       ofdm_bridge_irq_cdc              |              system_ofdm_bridge_irq_cdc_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       ofdm_core                        |                        system_ofdm_core_0 |      19901 |      16781 |    1960 | 1160 | 20055 |     10 |      8 |         63 |
+|       ofdm_ctrl_cdc                    |                    system_ofdm_ctrl_cdc_0 |         37 |         37 |       0 |    0 |   276 |      0 |      0 |          0 |
+|       ofdm_dma                         |                         system_ofdm_dma_0 |       2041 |       1920 |       8 |  113 |  3751 |      3 |      4 |          0 |
+|       ofdm_legacy_irq_cdc              |              system_ofdm_legacy_irq_cdc_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       ofdm_rf_boundary                 |                 system_ofdm_rf_boundary_0 |         34 |         34 |       0 |    0 |     4 |      0 |      0 |          0 |
+|       ofdm_rf_rx_enable_concat         |         system_ofdm_rf_rx_enable_concat_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       ofdm_rf_rx_valid_concat          |          system_ofdm_rf_rx_valid_concat_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       ofdm_rf_tx_enable_concat         |         system_ofdm_rf_tx_enable_concat_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       rom_sys_0                        |                        system_rom_sys_0_0 |         86 |         86 |       0 |    0 |    29 |      0 |      0 |          0 |
+|       rx_adrv9009_tpl_core             |          rx_adrv9009_tpl_core_imp_1BR824U |        897 |        897 |       0 |    0 |  1146 |      0 |      0 |          0 |
+|       rx_fir_decimator                 |              rx_fir_decimator_imp_1GA06XC |       1249 |        369 |      64 |  816 |  2583 |      0 |      0 |         44 |
+|       rx_os_adrv9009_tpl_core          |        rx_os_adrv9009_tpl_core_imp_7VKFB3 |        807 |        807 |       0 |    0 |   926 |      0 |      0 |          0 |
+|       sys_200m_rstgen                  |                  system_sys_200m_rstgen_0 |         16 |         15 |       0 |    1 |    31 |      0 |      0 |          0 |
+|       sys_audio_clkgen                 |                 system_sys_audio_clkgen_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       sys_concat_intc                  |                  system_sys_concat_intc_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       sys_ps7                          |                          system_sys_ps7_0 |         43 |         43 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       sys_rstgen                       |                       system_sys_rstgen_0 |         16 |         15 |       0 |    1 |    30 |      0 |      0 |          0 |
+|       tx_adrv9009_tpl_core             |          tx_adrv9009_tpl_core_imp_14ZYAV3 |      12985 |      12921 |       0 |   64 | 15288 |      0 |      0 |         16 |
+|       tx_fir_interpolator              |           tx_fir_interpolator_imp_1308SRJ |        940 |        570 |      64 |  306 |  3435 |      0 |      0 |         44 |
+|       util_adrv9009_rx_cpack           |           system_util_adrv9009_rx_cpack_0 |        109 |        109 |       0 |    0 |   132 |      0 |      0 |          0 |
+|       util_adrv9009_rx_os_cpack        |        system_util_adrv9009_rx_os_cpack_0 |         83 |         83 |       0 |    0 |    91 |      0 |      0 |          0 |
+|       util_adrv9009_tx_upack           |           system_util_adrv9009_tx_upack_0 |        230 |        230 |       0 |    0 |   182 |      0 |      0 |          0 |
+|       util_adrv9009_xcvr               |               system_util_adrv9009_xcvr_0 |        266 |        266 |       0 |    0 |   544 |      0 |      0 |          0 |
++----------------------------------------+-------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

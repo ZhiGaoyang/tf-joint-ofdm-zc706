@@ -1,0 +1,170 @@
+^C[?2004l[?2004h[?2004l
+[?2004hroot@analog:~/lean# 
+[?2004l[?2004hroot@analog:~/lean# cd /root/lean; sha256sum demo_live.sh | cut -c1-8; time ASCII=1 sh demo_live.sh; echo DEMO_RC=$?
+[?2004la3221191
+temperature 62.0 C
+======== A. Reference: fixed QPSK, no masking ========
+win   55 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win  106 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win  157 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win  209 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win  260 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.4 Mbit/s
+win  311 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.4 Mbit/s
+win  362 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.2 Mbit/s
+win  414 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.3 Mbit/s
+win  465 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.4 Mbit/s
+win  516 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win  567 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.4 Mbit/s
+win  619 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win  670 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.7 Mbit/s
+win  722 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.8 Mbit/s
+win  775 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.8 Mbit/s
+-> tone on
+win  800 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win  826 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win  878 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win  929 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win  980 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1032 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1083 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1135 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1186 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1237 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1289 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1340 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1391 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1443 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1494 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1546 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1597 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1648 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+win 1699 | tone ON  | mask: none | mod: QPSK |  0/16 frames ok | ~  0.0 Mbit/s
+-> tone off
+win 1700 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 53.9 Mbit/s
+win 1750 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 1801 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 1853 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win 1904 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win 1955 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.6 Mbit/s
+win 2007 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2058 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2109 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2160 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2212 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.8 Mbit/s
+win 2264 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.7 Mbit/s
+win 2316 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.7 Mbit/s
+win 2368 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.7 Mbit/s
+win 2420 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2471 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.5 Mbit/s
+win 2499 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.1 Mbit/s
+summary (A. Reference: fixed QPSK, no masking): tone off 25600/25600 frames ok, tone on 0/14400 frames ok
+======== B. Joint v2.2 + sensing, tone on/off during the run ========
+pre-tx sensing: no narrowband line -> initial mask none (0.32 s)
+-> modulation now: 16QAM
+win    1 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.9 Mbit/s
+win   15 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.5 Mbit/s
+win   32 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.9 Mbit/s
+win   49 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.8 Mbit/s
+win   66 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.9 Mbit/s
+win   83 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.0 Mbit/s
+win  101 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.6 Mbit/s
+win  118 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  135 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.3 Mbit/s
+win  152 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.6 Mbit/s
+win  169 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.8 Mbit/s
+win  185 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  202 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.8 Mbit/s
+win  219 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.8 Mbit/s
+win  236 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.6 Mbit/s
+win  253 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  270 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.5 Mbit/s
+win  287 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.4 Mbit/s
+-> tone on
+win  300 | tone ON  | mask: none | mod: 16QAM |  0/16 frames ok | ~  0.0 Mbit/s
+-> mask now: groups 6,7,8
+win  301 | tone ON  | mask: groups 6,7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win  305 | tone ON  | mask: groups 6,7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+-> mask now: groups 7,8
+-> modulation now: QPSK
+win  311 | tone ON  | mask: groups 7,8 | mod: QPSK | 16/16 frames ok | ~ 48.0 Mbit/s
+-> modulation now: 16QAM
+win  312 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.4 Mbit/s
+win  324 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win  343 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.3 Mbit/s
+win  362 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.3 Mbit/s
+win  380 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  399 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  418 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.7 Mbit/s
+win  437 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win  456 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.7 Mbit/s
+win  475 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.3 Mbit/s
+win  494 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.1 Mbit/s
+win  513 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.4 Mbit/s
+win  532 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+win  552 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.3 Mbit/s
+win  571 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.1 Mbit/s
+win  591 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.2 Mbit/s
+win  610 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.7 Mbit/s
+win  629 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.9 Mbit/s
+win  649 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+win  668 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  687 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+-> tone off
+win  700 | tone OFF | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.1 Mbit/s
+-> mask now: none
+-> modulation now: QPSK
+win  703 | tone OFF | mask: none | mod: QPSK | 16/16 frames ok | ~ 54.4 Mbit/s
+-> modulation now: 16QAM
+win  704 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.3 Mbit/s
+win  706 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.9 Mbit/s
+win  723 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.9 Mbit/s
+win  741 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  758 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  776 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.0 Mbit/s
+win  793 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.2 Mbit/s
+win  810 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.2 Mbit/s
+win  828 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.0 Mbit/s
+win  845 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.1 Mbit/s
+win  862 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.2 Mbit/s
+win  880 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.0 Mbit/s
+win  897 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.8 Mbit/s
+win  914 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.1 Mbit/s
+win  932 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  949 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 71.7 Mbit/s
+win  966 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.1 Mbit/s
+win  984 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.2 Mbit/s
+win  999 | tone OFF | mask: none | mod: 16QAM | 16/16 frames ok | ~ 72.1 Mbit/s
+summary (B. Joint v2.2 + sensing, tone on/off during the run): tone off 9600/9600 frames ok, tone on 6384/6400 frames ok
+======== C. Joint v2.2 + sensing, tone on before the first frame ========
+pre-tx sensing: lines 21.60 MHz -> initial mask groups 7,8 (0.32 s)
+-> modulation now: 16QAM
+win    1 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win   17 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.7 Mbit/s
+win   35 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win   54 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.5 Mbit/s
+win   73 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win   91 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.7 Mbit/s
+win  110 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  129 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  148 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.1 Mbit/s
+win  167 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win  187 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+win  206 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.8 Mbit/s
+win  225 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+win  245 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 62.0 Mbit/s
+win  264 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.6 Mbit/s
+win  283 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.9 Mbit/s
+win  299 | tone ON  | mask: groups 7,8 | mod: 16QAM | 16/16 frames ok | ~ 61.2 Mbit/s
+summary (C. Joint v2.2 + sensing, tone on before the first frame): tone off 0/0 frames ok, tone on 4800/4800 frames ok
+
+real	0m52.612s
+user	0m32.002s
+sys	0m1.932s
+DEMO_RC=0
+[?2004hroot@analog:~/lean# python3 demo_diag.py 'demo_logs/demo_*.jsonl'
+[?2004lLOG demo_085255_1271.jsonl windows 2500 ok 25600/40000 {'train_ok': 40000, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+LOG demo_085312_1271.jsonl windows 1000 ok 15984/16000 {'train_ok': 16000, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+LOG demo_085334_1271.jsonl windows 300 ok 4800/4800 {'train_ok': 4800, 'train_reject': 0, 'candidate_drops': 0, 'dropped_symbols': 0, 'ring_overruns': 0, 'fft_saturations': 0}
+[?2004hroot@analog:~/lean# python3 -c 'from lean_stability import health; print("TEMP_END",health()["temperature_mc"])'
+[?2004lTEMP_END 61000
+[?2004hroot@analog:~/lean# 
